@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 
@@ -7,6 +7,24 @@ const Navbar = () => {
   const [isInventoryOpen, setInventoryOpen] = useState(false);
 
   console.log("isReportOpen", isReportOpen);
+
+  const reportRef = useRef(null);
+  const inventoryRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (reportRef.current && !reportRef.current.contains(e.target)) {
+        setReportOpen(false);
+      }
+
+      if (inventoryRef.current && !inventoryRef.current.contains(e.target)) {
+        setInventoryOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="shadow-2xs pb-1">
@@ -33,7 +51,7 @@ const Navbar = () => {
           Feed Inventory
         </Link> */}
 
-        <div className="relative group">
+        <div ref={inventoryRef} className="relative group">
           <button
             onClick={() => setInventoryOpen(!isInventoryOpen)}
             className="flex items-center gap-2 text-base font-semibold px-3 py-1 
@@ -57,12 +75,14 @@ const Navbar = () => {
             <div className="flex flex-col text-gray-700">
               <Link
                 to="/bird-inventory"
+                onClick={() => setInventoryOpen(!isInventoryOpen)}
                 className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 rounded-t-2xl transition">
                 Birds Inventory
               </Link>
 
               <Link
                 to="/feed-inventory"
+                onClick={() => setInventoryOpen(!isInventoryOpen)}
                 className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 rounded-t-2xl transition">
                 Feed Inventory
               </Link>
@@ -70,7 +90,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="relative group">
+        <div ref={reportRef} className="relative group">
           <button
             onClick={() => setReportOpen(!isReportOpen)}
             className="flex items-center gap-2 text-base font-semibold px-3 py-1 
@@ -91,12 +111,14 @@ const Navbar = () => {
             <div className="flex flex-col text-gray-700">
               <Link
                 to="/reports/daily-report"
+                onClick={() => setReportOpen(!isReportOpen)}
                 className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 rounded-t-2xl transition">
                 Daily Report
               </Link>
 
               <Link
                 to="/reports/feedInventory-report"
+                onClick={() => setReportOpen(!isReportOpen)}
                 className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 transition">
                 Feed Report
               </Link>
