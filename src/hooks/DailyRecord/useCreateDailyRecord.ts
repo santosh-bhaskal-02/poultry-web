@@ -4,7 +4,7 @@ import type { DailyRecordFormData } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 
 interface createDailyRecordProps {
-  dailyRecord: createDailyRecordProps;
+  dailyRecord: DailyRecordFormData;
 }
 
 const createDailyRecord = async ({ dailyRecord }: createDailyRecordProps) => {

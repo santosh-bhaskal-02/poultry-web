@@ -7,13 +7,13 @@ import type { DailyRecordFormData } from "@/types";
 import useGetAllDailyRecord from "@/hooks/DailyRecord/useGetAllDailyRecords";
 
 const DailyReport = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
-  const [report, setReport] = useState<DailyRecordFormData[]>([]);
+  // const BASE_URL = import.meta.env.VITE_API_URL;
+  // const [report, setReport] = useState<DailyRecordFormData[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [editRecord, setEditRecord] = useState(false);
+  const [editRecord, setEditRecord] = useState();
 
   const { data: records, isPending } = useGetAllDailyRecord();
-  console.log("records1", records);
+  // console.log("records1", records);
   // useEffect(() => {
   //   const fetchReport = async () => {
   //     const response = await axios.get(`${BASE_URL}/api/dailyrecord`);
@@ -26,8 +26,9 @@ const DailyReport = () => {
   // }, []);
 
   const handleEdit = (record) => {
+    console.log("rcort12", record);
     setEditRecord(record);
-    setModalOpen(!isOpen);
+    setModalOpen(!isModalOpen);
   };
 
   const columns = [
@@ -40,7 +41,7 @@ const DailyReport = () => {
     { key: "feedConsumedBags", label: "Feed(Bage)" },
     { key: "mortalityCount", label: "Mortality" },
   ];
-  // console.log("report12", report);
+
   return (
     <div className="py-5">
       <DataTable data={records?.data} columns={columns} onRowClick={handleEdit} />

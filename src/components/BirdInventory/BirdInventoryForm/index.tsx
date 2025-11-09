@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import axios from "axios";
 import dayjs from "dayjs";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,14 +7,18 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import InputField from "@/components/Common/InputField";
 import type { BirdInventoryFormData } from "@/types";
+import useCreateBirdInventory from "@/hooks/BirdInventory/useCreateBirdInventory";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BirdInventory = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const queryClient = useQueryClient();
   const [isCalendarOpen, setCalendarOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [isSubmitting, setSubmitting] = useState(false);
+
+  const { mutate: createBirdInventory, isPending: isSubmitting } =
+    useCreateBirdInventory();
 
   const [formData, setFormData] = useState<BirdInventoryFormData>({
+    date: new Date(),
     batchNo: "",
     boxCount: "",
     birdsPerBoxCount: "",
@@ -28,15 +31,30 @@ const BirdInventory = () => {
     housedBirdCount: "",
   });
 
+  const resetForm = () => {
+    setFormData({
+      date: new Date(),
+      batchNo: "",
+      boxCount: "",
+      birdsPerBoxCount: "",
+      totalBirdCount: "",
+      birdsArrivedCount: "",
+      boxMortalityCount: "",
+      disabledBirdCount: "",
+      weakBirdCount: "",
+      excessBirdCount: "",
+      housedBirdCount: "",
+    });
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updated = { ...formData, [name]: value };
 
-    const batchNo = Number(updated.batchNo);
     const boxCount = Number(updated.boxCount) || 0;
     const birdsPerBox = Number(updated.birdsPerBoxCount) || 0;
     const boxMortality = Number(updated.boxMortalityCount) || 0;
-    const runs = Number(updated.disabledBirdCount) || 0;
+    const disabledBirdCount = Number(updated.disabledBirdCount) || 0;
     const weak = Number(updated.weakBirdCount) || 0;
     const excess = Number(updated.excessBirdCount) || 0;
 
@@ -46,7 +64,7 @@ const BirdInventory = () => {
     updated.housedBirdCount = (
       totalBirds -
       boxMortality -
-      runs -
+      disabledBirdCount -
       weak +
       excess
     ).toString();
@@ -56,43 +74,37 @@ const BirdInventory = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitting(true);
 
-    try {
-      const payload = {
-        Date: dayjs(date).format("YYYY-MM-DDTHH:mm:ss"),
-        BatchNo: Number(formData.batchNo),
-        BoxCount: Number(formData.boxCount),
-        BirdsPerBoxCount: Number(formData.birdsPerBoxCount),
-        TotalBirdCount: Number(formData.totalBirdCount),
-        BirdsArrivedCount: Number(formData.birdsArrivedCount),
-        BoxMortalityCount: Number(formData.boxMortalityCount),
-        disabledBirdCount: Number(formData.disabledBirdCount),
-        WeakBirdCount: Number(formData.weakBirdCount),
-        ExcessBirdCount: Number(formData.excessBirdCount),
-        HousedBirdCount: Number(formData.housedBirdCount),
-      };
+    const payload: BirdInventoryFormData = {
+      date: dayjs(formData.date).format("YYYY-MM-DDTHH:mm:ss"),
+      batchNo: Number(formData.batchNo),
+      boxCount: Number(formData.boxCount),
+      birdsPerBoxCount: Number(formData.birdsPerBoxCount),
+      totalBirdCount: Number(formData.totalBirdCount),
+      birdsArrivedCount: Number(formData.birdsArrivedCount),
+      boxMortalityCount: Number(formData.boxMortalityCount),
+      disabledBirdCount: Number(formData.disabledBirdCount),
+      weakBirdCount: Number(formData.weakBirdCount),
+      excessBirdCount: Number(formData.excessBirdCount),
+      housedBirdCount: Number(formData.housedBirdCount),
+    };
 
-      const res = await axios.post(`${BASE_URL}/api/birdsinventory`, payload);
-      console.log("Inventory submitted:", res.data);
-
-      setFormData({
-        batchNo: "",
-        boxCount: "",
-        birdsPerBoxCount: "",
-        totalBirdCount: "",
-        birdsArrivedCount: "",
-        boxMortalityCount: "",
-        disabledBirdCount: "",
-        weakBirdCount: "",
-        excessBirdCount: "",
-        housedBirdCount: "",
-      });
-    } catch (error) {
-      console.error(" Error submitting inventory:", error);
-    } finally {
-      setTimeout(() => setSubmitting(false), 1500);
-    }
+    createBirdInventory(
+      { birdInventory: payload },
+      {
+        onSuccess: () => {
+          console.log("success");
+          queryClient.invalidateQueries({
+            queryKey: ["get-all-birdInventories"],
+          });
+          queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
+          resetForm();
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      }
+    );
   };
 
   return (
@@ -112,17 +124,19 @@ const BirdInventory = () => {
                 variant="outline"
                 id="date"
                 className="w-44 h-10 justify-between font-normal border-gray-300">
-                {date ? dayjs(date).format("DD/MM/YYYY") : "Select date"}
+                {formData.date
+                  ? dayjs(formData.date).format("DD/MM/YYYY")
+                  : "Select date"}
                 <ChevronDownIcon />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-0">
               <Calendar
                 mode="single"
-                selected={date}
+                selected={formData.date}
                 captionLayout="dropdown"
                 onSelect={(d) => {
-                  setDate(d);
+                  setFormData({ ...formData, date: d });
                   setCalendarOpen(false);
                 }}
               />
@@ -134,7 +148,7 @@ const BirdInventory = () => {
           label="Batch No"
           name="batchNo"
           type="number"
-          value={formData.BatchNo}
+          value={formData.batchNo}
           onChange={handleInputChange}
         />
       </div>
@@ -205,12 +219,20 @@ const BirdInventory = () => {
         />
       </div>
 
-      <div className="flex justify-end mt-4">
+      <div className="flex flex-wrap gap-5 mt-4">
         <Button
           disabled={isSubmitting}
           type="submit"
           className="w-40 h-10 bg-blue-600 text-white hover:bg-blue-700">
           {isSubmitting ? "Submitting..." : "Submit"}
+        </Button>
+
+        <Button
+          type="button"
+          onClick={resetForm}
+          variant="secondary"
+          className="w-40 h-10 bg-gray-400 text-white hover:bg-gray-600 font-semibold">
+          Cancel
         </Button>
       </div>
     </form>

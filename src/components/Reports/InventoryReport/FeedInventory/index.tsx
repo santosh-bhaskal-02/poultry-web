@@ -1,27 +1,30 @@
-import EditDailyRecordModal from "@/components/Common/Modal/EditDailyRecord";
+import EditFeedInventoryModal from "@/components/Common/Modal/EditFeedInventory";
 import { DataTable } from "@/components/Common/Table";
-import axios from "axios";
+import useGetAllFeedInventory from "@/hooks/FeedInventory/useGetAllFeedInventories";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const FeedInventoryReport = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
-  const [report, setReport] = useState([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  // const BASE_URL = import.meta.env.VITE_API_URL;
+  // const [report, setReport] = useState([]);
   const [editRecord, setEditRecord] = useState(false);
-  useEffect(() => {
-    const fetchReport = async () => {
-      const response = await axios.get(`${BASE_URL}/api/feedinventory`);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const { data: reports, isPending } = useGetAllFeedInventory();
+  // console.log("feeedRepor", reports);
+  // useEffect(() => {
+  //   const fetchReport = async () => {
+  //     const response = await axios.get(`${BASE_URL}/api/feedinventory`);
 
-      setReport(response.data);
-      console.log("report", response.data);
-    };
+  //     setReport(response.data.data);
+  //     console.log("report", response.data);
+  //   };
 
-    fetchReport();
-  }, []);
+  //   fetchReport();
+  // }, []);
+
   const handleEdit = (record) => {
     setEditRecord(record);
-    setModalOpen(!isOpen);
+    setModalOpen(!isModalOpen);
   };
 
   const columns = [
@@ -30,18 +33,19 @@ const FeedInventoryReport = () => {
       label: "Date",
       render: (value: string) => dayjs(value).format("DD/MM/YYYY"),
     },
-    { key: "batchId", label: "Batch No." },
-    { key: "feedName", label: "Birds Arrived" },
+    { key: "batchNo", label: "Batch No." },
+    { key: "bagsArrivedCount", label: "Feed Bags." },
+    { key: "feedName", label: "Feed Name" },
     { key: "driverName", label: "Driver Name" },
     { key: "driverPhoneNumber", label: "Driver Phone No." },
   ];
-  console.log("BirdInven tory", report);
+  // console.log("BirdInven tory", report);
 
   return (
     <div className="px-2 py-5">
-      <DataTable data={report} columns={columns} onRowClick={handleEdit} />
+      <DataTable data={reports?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
-        <EditDailyRecordModal
+        <EditFeedInventoryModal
           editData={editRecord}
           isOpen={isModalOpen}
           onClose={() => setModalOpen(!isModalOpen)}

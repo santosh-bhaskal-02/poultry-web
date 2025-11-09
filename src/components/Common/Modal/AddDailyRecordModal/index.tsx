@@ -4,17 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarDays, ChevronDown, Bird, Wheat, Skull } from "lucide-react";
+import { CalendarDays, ChevronDown, Bird, Wheat, Skull, X } from "lucide-react";
 import InputField from "@/components/Common/InputField";
 import useCreateDailyRecord from "@/hooks/DailyRecord/useCreateDailyRecord";
 import { useQueryClient } from "@tanstack/react-query";
 import type { DailyRecordFormData } from "@/types";
 import { Send, RotateCcw } from "lucide-react";
 
-const DashboardForm = () => {
+const AddDailyRecordModal = ({ open, onClose }) => {
   const queryClient = useQueryClient();
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [isSubmitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState<DailyRecordFormData>({
     date: new Date(),
@@ -37,11 +36,10 @@ const DashboardForm = () => {
     });
   };
 
-  const { mutate: createDailyRecord } = useCreateDailyRecord();
+  const { mutate: createDailyRecord, isPending: isSubmitting } = useCreateDailyRecord();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitting(true);
 
     const payload = {
       date: dayjs(formData.date).format("YYYY-MM-DDTHH:mm:ss"),
@@ -58,22 +56,44 @@ const DashboardForm = () => {
           queryClient.invalidateQueries({ queryKey: ["get-all-dailyRecord"] });
           resetForm();
         },
-        onSettled: () => setTimeout(() => setSubmitting(false), 500),
       }
     );
   };
 
+  if (!open) {
+    return null;
+  }
+
   return (
-    <div className="flex justify-center items-center w-full px-1 py-6 sm:py-6">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+      // Close modal when clicking outside of the form
+      onClick={onClose}>
+      {/* Form Container (Modal Content) */}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-6 bg-gradient-to-br from-white to-blue-50 shadow-lg rounded-xl p-4 sm:p-8 w-full sm:w-[90%] lg:w-[800px] transition-all duration-300">
-        <h1 className="font-bold text-2xl sm:text-3xl text-blue-700 flex items-center gap-3 justify-center">
-          <CalendarDays className="text-yellow-500 w-6 h-6 sm:w-8 sm:h-8" />
-          Daily Farm Record
-        </h1>
+        // Stop propagation to prevent closing when clicking inside the form
+        onClick={(e) => e.stopPropagation()}
+        className="flex flex-col gap-6 bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-4xl transform transition-all duration-300 scale-100 ease-out border-t-4 border-blue-600">
+        {/* Modal Header */}
+        <div className="flex justify-between items-start border-b pb-4 mb-2 relative">
+          <h1 className="font-extrabold text-2xl sm:text-3xl text-blue-700 flex items-center gap-3">
+            <CalendarDays className="text-yellow-500 w-7 h-7" />
+            Daily Farm Record
+          </h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-6">
+          {/* Close Button (Top Right) */}
+          <Button
+            onClick={onClose}
+            className="p-2 h-auto w-auto bg-red-600 hover:bg-gray-200 text-white absolute top-0 right-0 rounded-full"
+            variant="secondary">
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+
+        {/* Form Fields - Responsive Grid (2 columns on sm, 3 on md) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
+          {/* Date Picker */}
           <div className="flex flex-col gap-2">
             <Label
               htmlFor="date"
@@ -86,7 +106,7 @@ const DashboardForm = () => {
                 <Button
                   variant="outline"
                   id="date"
-                  className="w-full justify-between font-normal text-md border-gray-300 bg-white hover:bg-gray-50 h-11">
+                  className="w-full justify-between font-normal text-md border-gray-300 bg-white hover:bg-gray-50 h-11 text-gray-700 px-3 py-2 rounded-lg border">
                   {formData.date
                     ? dayjs(formData.date).format("DD/MMM/YYYY")
                     : "Select date"}
@@ -95,10 +115,9 @@ const DashboardForm = () => {
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="p-0 w-[95vw] sm:w-72 bg-white rounded-md shadow-lg">
+                className="p-2 w-72 bg-white rounded-xl shadow-2xl z-50">
                 <Calendar
                   mode="single"
-                  className="72"
                   selected={formData.date}
                   captionLayout="dropdown"
                   onSelect={(d) => {
@@ -109,6 +128,7 @@ const DashboardForm = () => {
               </PopoverContent>
             </Popover>
           </div>
+
           {/* Bird Age (Days) */}
           <InputField
             label="Bird Age (Days)"
@@ -119,6 +139,7 @@ const DashboardForm = () => {
             required
             icon={<Bird className="text-blue-500 w-5 h-5" />}
           />
+
           {/* Feed Consumed (Bags) */}
           <InputField
             label="Feed Consumed (Bags)"
@@ -129,6 +150,7 @@ const DashboardForm = () => {
             required
             icon={<Wheat className="text-yellow-500 w-5 h-5" />}
           />
+
           {/* Mortality Count */}
           <InputField
             label="Mortality Count"
@@ -140,34 +162,30 @@ const DashboardForm = () => {
             icon={<Skull className="text-red-500 w-5 h-5" />}
           />
         </div>
-        <div className="flex justify-center flex-wrap gap-4 mt-4">
-          {/* Submit Button with Icon */}
+
+        {/* Action Buttons - Forced to One Row */}
+        <div className="flex justify-center flex-row gap-4 mt-6">
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-48 h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-200 flex items-center justify-center gap-2">
-            {" "}
-            {/* Increased width on mobile, added flex and gap */}
+            className="w-36 h-11 transition-all duration-200 flex items-center justify-center gap-2 shadow-md">
             {isSubmitting ? (
               <>
-                <span className="animate-spin">🌀</span> Submitting...
+                <span className="animate-spin">🌀</span> Submitting
               </>
             ) : (
               <>
-                <Send className="w-5 h-5" /> Submit Record
+                <Send className="w-5 h-5" /> Submit
               </>
             )}
           </Button>
 
-          {/* Reset Button with Icon */}
           <Button
             type="button"
             onClick={resetForm}
             variant="secondary"
-            className="w-full sm:w-48 h-12 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition-all duration-200 flex items-center justify-center gap-2">
-            {" "}
-            {/* Increased width on mobile, changed background for secondary style */}
-            <RotateCcw className="w-5 h-5" /> Reset Form
+            className="w-36 h-11 transition-all duration-200 flex items-center justify-center gap-2 shadow-md">
+            <RotateCcw className="w-5 h-5" /> Reset
           </Button>
         </div>
       </form>
@@ -175,4 +193,4 @@ const DashboardForm = () => {
   );
 };
 
-export default DashboardForm;
+export default AddDailyRecordModal;

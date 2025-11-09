@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import dayjs from "dayjs";
 import { DataTable } from "@/components/Common/Table";
 import EditDailyRecordModal from "@/components/Common/Modal/EditDailyRecord";
+import useGetAllBirdInventories from "@/hooks/BirdInventory/useGetAllBirdInventories";
+import EditBirdInventoryModal from "@/components/Common/Modal/EditBirdInventory";
 
 const BirdsInventoryReport = () => {
   const BASE_URL = import.meta.env.VITE_API_URL;
@@ -10,20 +11,22 @@ const BirdsInventoryReport = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [editRecord, setEditRecord] = useState(false);
 
-  useEffect(() => {
-    const fetchReport = async () => {
-      const response = await axios.get(`${BASE_URL}/api/birdsinventory`);
+  const { data: reports, isPending } = useGetAllBirdInventories();
 
-      setReport(response.data);
-      console.log("report", response.data);
-    };
+  // useEffect(() => {
+  //   const fetchReport = async () => {
+  //     const response = await axios.get(`${BASE_URL}/api/birdsinventory`);
 
-    fetchReport();
-  }, []);
+  //     setReport(response.data.data);
+  //     console.log("report", response.data);
+  //   };
+
+  //   fetchReport();
+  // }, []);
 
   const handleEdit = (record) => {
     setEditRecord(record);
-    setModalOpen(!isOpen);
+    setModalOpen(!isModalOpen);
   };
 
   const columns = [
@@ -40,9 +43,9 @@ const BirdsInventoryReport = () => {
 
   return (
     <div className="px-2 py-5">
-      <DataTable data={report} columns={columns} onRowClick={handleEdit} />
+      <DataTable data={reports?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
-        <EditDailyRecordModal
+        <EditBirdInventoryModal
           editData={editRecord}
           isOpen={isModalOpen}
           onClose={() => setModalOpen(!isModalOpen)}

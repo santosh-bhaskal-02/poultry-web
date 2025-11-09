@@ -11,13 +11,14 @@ import FeedInventory from "@/Pages/FeedInventory";
 // Pages
 import DashboardPage from "@/Pages/DashBoard";
 import { BirdInventoryPage, DailyReportPage, FeedInventoryPage } from "@/Pages/Reports";
-
+import { Toaster } from "sonner";
 const Layout = () => (
   <>
     <Navbar />
-    <main className="p-4 sm:p-0">
+    <main>
       <Outlet />
     </main>
+    <Toaster richColors position="top-right" closeButton />
   </>
 );
 
@@ -36,9 +37,9 @@ const AppRoutes = () => {
 
           {/* Reports Section */}
           <Route path="/reports">
-            <Route path="daily" element={<DailyReportPage />} />
-            <Route path="birds" element={<BirdInventoryPage />} />
-            <Route path="feed" element={<FeedInventoryPage />} />
+            <Route path="daily-report" element={<DailyReportPage />} />
+            <Route path="birds-inventory" element={<BirdInventoryPage />} />
+            <Route path="feed-inventory" element={<FeedInventoryPage />} />
           </Route>
         </Route>
       </Routes>

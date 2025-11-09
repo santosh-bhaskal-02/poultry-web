@@ -1,7 +1,11 @@
+import type dayjs from "dayjs";
+
 export interface DailyRecordFormData {
-  birdAgeInDays: string;
-  feedConsumedBags: string;
-  mortalityCount: string;
+  id?: number | string;
+  date: string | dayjs;
+  birdAgeInDays: number | string;
+  feedConsumedBags: number | string;
+  mortalityCount: number | string;
 }
 
 export interface DailyRecordResponse {

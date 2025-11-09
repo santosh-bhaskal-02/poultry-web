@@ -14,7 +14,7 @@ const getAllDailyRecord = async () => {
 const useGetAllDailyRecord = () => {
   return useQuery({
     queryKey: ["get-all-dailyRecord"],
-    queryFn: () => getAllDailyRecord(),
+    queryFn: getAllDailyRecord,
   });
 };
 

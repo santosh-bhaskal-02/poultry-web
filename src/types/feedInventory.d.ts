@@ -1,6 +1,10 @@
+import type dayjs from "dayjs";
+
 export interface FeedInventoryFormData {
-  feedName: string;
-  bagsArrivedCount: string;
-  driverName: string;
-  driverPhoneNumber: string;
+  date: string | dayjs;
+  batchNo?: number | string;
+  feedName: number | string;
+  bagsArrivedCount: number | string;
+  driverName: number | string;
+  driverPhoneNumber: number | string;
 }

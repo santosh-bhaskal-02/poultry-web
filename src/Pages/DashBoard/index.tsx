@@ -1,7 +1,7 @@
 import Dashboard from "@/components/Dashboard";
 
 const DashboardPage = () => (
-  <div className="bg-gray-50 min-h-screen">
+  <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-yellow-50 p-1  ">
     <Dashboard />
   </div>
 );

@@ -1,5 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import axios from "axios";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import dayjs from "dayjs";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,21 +7,26 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import InputField from "@/components/Common/InputField";
 import type { FeedInventoryFormData } from "@/types";
+import { useQueryClient } from "@tanstack/react-query";
+import useCreateFeedInventory from "@/hooks/FeedInventory/useCreateFeedInventory";
 
 const FeedInventory = () => {
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const queryClient = useQueryClient();
+  // const BASE_URL = import.meta.env.VITE_API_URL;
   const [isSubmitting, setSubmitting] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const [date, setdate] = useState<Date | undefined>(new Date());
+  // const [date, setdate] = useState<Date | undefined>(new Date());
 
   const [formData, setFormData] = useState<FeedInventoryFormData>({
+    date: new Date(),
     feedName: "",
     bagsArrivedCount: "",
     driverName: "",
     driverPhoneNumber: "",
   });
 
-  // ✅ Handle input changes
+  const { mutate: createFeedInventory } = useCreateFeedInventory();
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -33,6 +37,7 @@ const FeedInventory = () => {
 
   const resetForm = () => {
     setFormData({
+      date: dayjs(formData.date).format("YYYY-MM-DDTHH:mm:ss"),
       feedName: "",
       bagsArrivedCount: "",
       driverName: "",
@@ -46,16 +51,29 @@ const FeedInventory = () => {
 
     try {
       const payload = {
-        Date: dayjs(date).format("YYYY-MM-DDTHH:mm:ss"),
-        FeedName: formData.feedName,
-        BagsArrivedCount: formData.bagsArrivedCount,
-        DriverName: formData.driverName,
-        DriverPhoneNumber: formData.driverPhoneNumber,
+        date: dayjs(formData.date).format("YYYY-MM-DDTHH:mm:ss"),
+        feedName: formData.feedName,
+        bagsArrivedCount: formData.bagsArrivedCount,
+        driverName: formData.driverName,
+        driverPhoneNumber: formData.driverPhoneNumber,
       };
-
-      const response = await axios.post(`${BASE_URL}/api/feedinventory`, payload);
-      console.log("Feed Inventory submitted:", response.data);
-
+      createFeedInventory(
+        { feedInventory: payload },
+        {
+          onSuccess: () => {
+            console.log("success");
+            queryClient.invalidateQueries({
+              queryKey: ["get-all-feedInventories"],
+            });
+            queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
+          },
+          onError: (error) => {
+            console.log(error);
+          },
+        }
+      );
+      // const response = await axios.post(`${BASE_URL}/api/feedinventory`, payload);
+      // console.log("Feed Inventory submitted:", response.data);
       resetForm();
     } catch (error) {
       console.error("Error submitting feed inventory:", error);
@@ -80,17 +98,17 @@ const FeedInventory = () => {
               variant="outline"
               id="date"
               className="w-44 h-10 justify-between font-normal border-gray-300">
-              {date ? dayjs(date).format("DD/MM/YYYY") : "Select date"}
+              {formData.date ? dayjs(formData.date).format("DD/MM/YYYY") : "Select date"}
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-64 p-0" align="start">
             <Calendar
               mode="single"
-              selected={date}
+              selected={formData.date}
               captionLayout="dropdown"
               onSelect={(d) => {
-                setdate(d);
+                setFormData({ ...formData, date: d });
                 setCalendarOpen(false);
               }}
             />

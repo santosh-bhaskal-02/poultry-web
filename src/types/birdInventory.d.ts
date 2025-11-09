@@ -1,4 +1,8 @@
+import type dayjs from "dayjs";
+
 export interface BirdInventoryFormData {
+  date: string | dayjs;
+  batchNo: number | string;
   boxCount: number | string; // Total number of boxes
   birdsPerBoxCount: number | string; // Birds per box
   totalBirdCount: number | string; // boxCount * birdsPerBoxCount
