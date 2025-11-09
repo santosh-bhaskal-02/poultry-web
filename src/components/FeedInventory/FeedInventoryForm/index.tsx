@@ -102,9 +102,10 @@ const FeedInventory = () => {
               <ChevronDownIcon />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-0" align="start">
+          <PopoverContent className="w-full p-0" align="start">
             <Calendar
               mode="single"
+              className="w-72"
               selected={formData.date}
               captionLayout="dropdown"
               onSelect={(d) => {

@@ -120,9 +120,10 @@ const AddDailyRecordModal = ({ open, onClose }: AddDailyRecordModalProps) => {
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="p-2 w-72 bg-white rounded-xl shadow-2xl z-50">
+                className="p-2 w-full bg-white rounded-xl shadow-2xl z-50">
                 <Calendar
                   mode="single"
+                  className="w-72"
                   selected={formData.date}
                   captionLayout="dropdown"
                   onSelect={(d) => {

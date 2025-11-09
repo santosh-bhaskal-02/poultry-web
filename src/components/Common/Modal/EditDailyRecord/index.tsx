@@ -183,6 +183,7 @@ const EditDailyRecordModal = ({
                   className="p-3 w-[18rem] sm:w-[22rem] shadow-lg rounded-xl bg-white">
                   <Calendar
                     mode="single"
+                    className="w-72"
                     selected={editData.date}
                     captionLayout="dropdown"
                     onSelect={(date) => {

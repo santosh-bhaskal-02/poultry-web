@@ -130,9 +130,10 @@ const BirdInventory = () => {
                 <ChevronDownIcon />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-0">
+            <PopoverContent className="w-full p-0">
               <Calendar
                 mode="single"
+                className="w-72"
                 selected={formData.date}
                 captionLayout="dropdown"
                 onSelect={(d) => {

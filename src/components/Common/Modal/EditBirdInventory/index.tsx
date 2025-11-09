@@ -205,10 +205,11 @@ const EditBirdInventoryModal = ({
                 </PopoverTrigger>
                 <PopoverContent
                   align="start"
-                  className="p-3 w-[18rem] sm:w-[22rem] shadow-lg rounded-xl bg-white">
+                  className="p-3 w-full sm:w-[22rem] shadow-lg rounded-xl bg-white">
                   <Calendar
                     mode="single"
                     selected={editData.date}
+                    className="w-72"
                     captionLayout="dropdown"
                     onSelect={(date) => {
                       setFormData((prev: BirdInventoryFormData) => ({
