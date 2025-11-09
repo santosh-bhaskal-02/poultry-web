@@ -1,18 +1,17 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import dayjs from "dayjs";
 import EditDailyRecordModal from "../../Common/Modal/EditDailyRecord";
 import { DataTable } from "@/components/Common/Table";
-import type { DailyRecordFormData } from "@/types";
 import useGetAllDailyRecord from "@/hooks/DailyRecord/useGetAllDailyRecords";
+import type { DailyRecordResponse } from "@/types";
 
 const DailyReport = () => {
   // const BASE_URL = import.meta.env.VITE_API_URL;
   // const [report, setReport] = useState<DailyRecordFormData[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [editRecord, setEditRecord] = useState();
+  const [editRecord, setEditRecord] = useState<DailyRecordResponse>();
 
-  const { data: records, isPending } = useGetAllDailyRecord();
+  const { data: records } = useGetAllDailyRecord();
   // console.log("records1", records);
   // useEffect(() => {
   //   const fetchReport = async () => {
@@ -25,8 +24,7 @@ const DailyReport = () => {
   //   fetchReport();
   // }, []);
 
-  const handleEdit = (record) => {
-    console.log("rcort12", record);
+  const handleEdit = (record: DailyRecordResponse) => {
     setEditRecord(record);
     setModalOpen(!isModalOpen);
   };

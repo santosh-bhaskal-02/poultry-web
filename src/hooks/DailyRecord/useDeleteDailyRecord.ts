@@ -14,7 +14,7 @@ const deleteDailyRecord = async ({ id }: deleteDailyRecordProps) => {
   return response;
 };
 
-const useDeleteDailyRecord = (id) => {
+const useDeleteDailyRecord = (id: number | string) => {
   return useMutation({
     mutationKey: ["create-dailyRecord", id],
     mutationFn: deleteDailyRecord,

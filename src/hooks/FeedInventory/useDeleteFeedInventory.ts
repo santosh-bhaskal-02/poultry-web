@@ -14,7 +14,7 @@ const deleteFeedInventory = async ({ id }: deleteFeedInventoryProps) => {
   return response;
 };
 
-const useDeleteFeedInventory = (id) => {
+const useDeleteFeedInventory = (id: number | string | undefined) => {
   return useMutation({
     mutationKey: ["delete-feedInventory", id],
     mutationFn: deleteFeedInventory,

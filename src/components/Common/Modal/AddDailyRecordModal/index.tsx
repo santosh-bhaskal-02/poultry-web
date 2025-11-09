@@ -11,7 +11,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { DailyRecordFormData } from "@/types";
 import { Send, RotateCcw } from "lucide-react";
 
-const AddDailyRecordModal = ({ open, onClose }) => {
+interface AddDailyRecordModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const AddDailyRecordModal = ({ open, onClose }: AddDailyRecordModalProps) => {
   const queryClient = useQueryClient();
   const [calendarOpen, setCalendarOpen] = useState(false);
 

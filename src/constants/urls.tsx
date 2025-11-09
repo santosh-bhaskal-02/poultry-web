@@ -5,7 +5,8 @@ export const GET_DASHBOARD = "api/dashboard";
 export const CREATE_DAILY_RECORD = "api/dailyrecord";
 export const GET_ALL_DAILY_RECORD = "api/dailyrecord";
 export const UPDATE_DAILY_RECORD = (id: string | number) => `api/dailyrecord/${id}`;
-export const DELETE_DAILY_RECORD = (id: string) => `api/dailyrecord/soft-delete/${id}`;
+export const DELETE_DAILY_RECORD = (id: string | number) =>
+  `api/dailyrecord/soft-delete/${id}`;
 
 //BIRD INVENTORY
 export const CREATE_BIRD_INVENTORY = "api/birdsinventory";

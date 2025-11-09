@@ -1,6 +1,7 @@
 import type dayjs from "dayjs";
 
 export interface FeedInventoryFormData {
+  id?: string | number;
   date: string | dayjs;
   batchNo?: number | string;
   feedName: number | string;

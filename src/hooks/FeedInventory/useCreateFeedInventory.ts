@@ -1,4 +1,4 @@
-import { CREATE_DAILY_RECORD, CREATE_FEED_INVENTORY } from "@/constants/urls";
+import { CREATE_FEED_INVENTORY } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
 import type { FeedInventoryFormData } from "@/types";
 import { useMutation } from "@tanstack/react-query";

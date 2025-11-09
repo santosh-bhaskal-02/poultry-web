@@ -13,7 +13,7 @@ function Spinner() {
   useEffect(() => {
     let t = 0;
     let rotation = 0;
-    let animationFrameId;
+    let animationFrameId: number;
 
     const animate = () => {
       if (!dotsRef.current) return;
@@ -24,7 +24,7 @@ function Spinner() {
       const radius = minRadius + (maxRadius - minRadius) * (0.5 + 0.5 * Math.sin(t));
       const dots = dotsRef.current.querySelectorAll(".dot");
 
-      dots.forEach((dot, i) => {
+      dots.forEach((dot: { style: { transform: string } }, i: number) => {
         const baseAngle = (i * 360) / dotCount;
         const angle = ((baseAngle + rotation) * Math.PI) / 180;
         const x = radius * Math.cos(angle);

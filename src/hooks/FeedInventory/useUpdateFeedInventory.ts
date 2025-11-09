@@ -1,4 +1,4 @@
-import { UPDATE_BIRD_INVENTORY, UPDATE_FEED_INVENTORY } from "@/constants/urls";
+import { UPDATE_FEED_INVENTORY } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
 import type { FeedInventoryFormData } from "@/types";
 import { useMutation } from "@tanstack/react-query";

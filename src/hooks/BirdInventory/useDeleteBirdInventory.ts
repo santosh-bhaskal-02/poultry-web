@@ -1,4 +1,4 @@
-import { DELETE_BIRD_INVENTORY, DELETE_DAILY_RECORD } from "@/constants/urls";
+import { DELETE_BIRD_INVENTORY } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
 import { useMutation } from "@tanstack/react-query";
 
@@ -14,7 +14,7 @@ const deleteBirdInventory = async ({ id }: deleteBirdInventoryProps) => {
   return response;
 };
 
-const useDeleteBirdInventory = (id) => {
+const useDeleteBirdInventory = (id: number | string) => {
   return useMutation({
     mutationKey: ["delete-birdInventory", id],
     mutationFn: deleteBirdInventory,

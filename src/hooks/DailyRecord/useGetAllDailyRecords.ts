@@ -1,6 +1,6 @@
 import { GET_ALL_DAILY_RECORD } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const getAllDailyRecord = async () => {
   const response = await makeRequest({

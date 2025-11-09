@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useQueryClient } from "@tanstack/react-query";
-import type { FeedInventoryFormData } from "@/types";
+import type { DailyRecordFormData, FeedInventoryFormData } from "@/types";
 import InputField from "../../InputField";
 import useUpdateFeedInventory from "@/hooks/FeedInventory/useUpdateFeedInventory";
 import useDeleteFeedInventory from "@/hooks/FeedInventory/useDeleteFeedInventory";
@@ -187,7 +187,7 @@ const EditFeedInventoryModal = ({
                         name: "date",
                         value: date ?? new Date(),
                       },
-                    } as any);
+                    });
                     setCalendarOpen(false);
                   }}
                 />
