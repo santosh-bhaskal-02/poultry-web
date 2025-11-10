@@ -1,9 +1,10 @@
 import SummaryCard from "@/components/Common/cards/DashboardSummary";
 import { Bird, Wheat, Skull, Warehouse } from "lucide-react";
 import useGetDashboard from "@/hooks/Dashboard/useGetDashboard";
+import Spinner from "@/components/Common/Spinner";
 
 const DashboardSummary = () => {
-  const { data: metrics } = useGetDashboard();
+  const { data: metrics, isPending } = useGetDashboard();
 
   const summaryData = [
     {
@@ -33,17 +34,24 @@ const DashboardSummary = () => {
   ];
 
   return (
-    <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {summaryData.map((item, i) => (
-        <SummaryCard
-          key={i}
-          title={item.title}
-          value={item.value}
-          color={item.color}
-          icon={item.icon}
-        />
-      ))}
-    </section>
+    <>
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {summaryData.map((item, i) => (
+          <SummaryCard
+            key={i}
+            title={item.title}
+            value={item.value}
+            color={item.color}
+            icon={item.icon}
+          />
+        ))}
+      </section>
+      {isPending && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm rounded-2xl z-50">
+          <Spinner />
+        </div>
+      )}
+    </>
   );
 };
 
