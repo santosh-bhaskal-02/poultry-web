@@ -51,7 +51,7 @@ const EditFeedInventoryModal = ({
   useEffect(() => {
     if (editData) {
       setData({
-        date: editData.date,
+        date: dayjs(editData.date),
         feedName: editData.feedName,
         bagsArrivedCount: editData.bagsArrivedCount,
         driverName: editData.driverName,
@@ -74,7 +74,7 @@ const EditFeedInventoryModal = ({
 
     const payload = {
       id: editData.id,
-      date: dayjs(editData.date).format("YYYY-MM-DDTHH:mm:ss"),
+      date: dayjs(data.date).format("YYYY-MM-DDTHH:mm:ss"),
       feedName: data.feedName,
       bagsArrivedCount: data.bagsArrivedCount,
       driverName: data.driverName,
@@ -180,15 +180,9 @@ const EditFeedInventoryModal = ({
                 <Calendar
                   mode="single"
                   className="w-72"
-                  selected={editData.date}
                   captionLayout="dropdown"
-                  onSelect={(date) => {
-                    handleChange({
-                      target: {
-                        name: "date",
-                        value: date ?? new Date(),
-                      },
-                    });
+                  onSelect={(d) => {
+                    setData({ ...data, date: d });
                     setCalendarOpen(false);
                   }}
                 />

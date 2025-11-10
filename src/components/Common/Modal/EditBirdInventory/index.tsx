@@ -63,7 +63,7 @@ const EditBirdInventoryModal = ({
   useEffect(() => {
     if (editData) {
       setFormData({
-        date: editData.date,
+        date: dayjs(editData.date),
         batchNo: editData.batchNo,
         boxCount: editData.boxCount,
         birdsPerBoxCount: editData.birdsPerBoxCount,
@@ -208,14 +208,10 @@ const EditBirdInventoryModal = ({
                   className="p-3 w-full sm:w-[22rem] shadow-lg rounded-xl bg-white">
                   <Calendar
                     mode="single"
-                    selected={editData.date}
                     className="w-72"
                     captionLayout="dropdown"
-                    onSelect={(date) => {
-                      setFormData((prev: BirdInventoryFormData) => ({
-                        ...prev,
-                        date: date ?? new Date(),
-                      }));
+                    onSelect={(d) => {
+                      setFormData({ ...formData, date: d });
                       setCalendarOpen(false);
                     }}
                   />

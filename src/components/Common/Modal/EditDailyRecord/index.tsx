@@ -51,7 +51,7 @@ const EditDailyRecordModal = ({
   useEffect(() => {
     if (editData) {
       setData({
-        date: editData.date,
+        date: dayjs(editData.date),
         birdAgeInDays: editData.birdAgeInDays,
         feedConsumedBags: editData.feedConsumedBags,
         mortalityCount: editData.mortalityCount,
@@ -73,7 +73,7 @@ const EditDailyRecordModal = ({
 
     const payload = {
       id: editData.id,
-      date: dayjs(editData.date).format("YYYY-MM-DDTHH:mm:ss"),
+      date: dayjs(data.date).format("YYYY-MM-DDTHH:mm:ss"),
       birdAgeInDays: data.birdAgeInDays,
       feedConsumedBags: data.feedConsumedBags,
       mortalityCount: data.mortalityCount,
@@ -172,9 +172,7 @@ const EditDailyRecordModal = ({
                     variant="outline"
                     id="date"
                     className="justify-between h-11 text-gray-700 border-gray-300 rounded-md shadow-sm hover:border-blue-400">
-                    {editData.date
-                      ? dayjs(editData.date).format("DD/MM/YYYY")
-                      : "Select date"}
+                    {data.date ? dayjs(data.date).format("DD/MM/YYYY") : "Select date"}
                     <ChevronDownIcon className="w-4 h-4 text-blue-600" />
                   </Button>
                 </PopoverTrigger>
@@ -184,15 +182,9 @@ const EditDailyRecordModal = ({
                   <Calendar
                     mode="single"
                     className="w-72"
-                    selected={editData.date}
                     captionLayout="dropdown"
-                    onSelect={(date) => {
-                      handleChange({
-                        target: {
-                          name: "date",
-                          value: date ?? new Date(),
-                        },
-                      } as any);
+                    onSelect={(d) => {
+                      setData({ ...data, date: d });
                       setCalendarOpen(false);
                     }}
                   />
