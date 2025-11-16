@@ -10,6 +10,7 @@ import useCreateDailyRecord from "@/hooks/DailyRecord/useCreateDailyRecord";
 import { useQueryClient } from "@tanstack/react-query";
 import type { DailyRecordFormData } from "@/types";
 import { Send, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 
 interface AddDailyRecordModalProps {
   open: boolean;
@@ -56,10 +57,16 @@ const AddDailyRecordModal = ({ open, onClose }: AddDailyRecordModalProps) => {
     createDailyRecord(
       { dailyRecord: payload },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          console.log(res);
+          toast.success(res?.message);
           queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
           queryClient.invalidateQueries({ queryKey: ["get-all-dailyRecord"] });
           resetForm();
+        },
+        onError: (error) => {
+          console.log(error.message);
+          toast.error(error.message || "Failed to add daily inventory");
         },
       }
     );

@@ -36,12 +36,12 @@ const DailyReport = () => {
       render: (value: string) => dayjs(value).format("DD/MM/YYYY"),
     },
     { key: "birdAgeInDays", label: "Age" },
-    { key: "feedConsumedBags", label: "Feed(Bage)" },
+    { key: "feedConsumedBags", label: "Feed(Bag)" },
     { key: "mortalityCount", label: "Mortality" },
   ];
 
   return (
-    <div className="py-5">
+    <div className="py-2">
       <DataTable data={records?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
         <EditDailyRecordModal

@@ -10,7 +10,7 @@ import {
   Menu,
   X,
   ClipboardList,
-  Egg, // 🥚 New Icon for the logo
+  Shield,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -22,28 +22,23 @@ const Navbar = () => {
   const inventoryRef = useRef(null);
   const navRef = useRef(null);
 
-  // Helper to close all menus (dropdowns and mobile menu)
+  // Close dropdowns and mobile menu
   const closeAllMenus = () => {
     setReportOpen(false);
     setInventoryOpen(false);
     setMobileMenuOpen(false);
   };
 
-  const handleLinkClick = (setter) => {
-    setter(false);
-    // Close the entire mobile menu when a link is clicked
-    setMobileMenuOpen(false);
-  };
-
   const linkClass =
-    "text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 transition duration-200 ease-in-out flex items-center gap-2 whitespace-nowrap w-full sm:w-auto";
+    "text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition duration-200 ease-in-out flex items-center gap-2 whitespace-nowrap w-full sm:w-auto";
 
   const dropdownButtonClass =
-    "flex justify-between items-center gap-1 text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 transition duration-200 ease-in-out whitespace-nowrap w-full sm:w-auto";
+    "flex justify-between items-center gap-1 text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition duration-200 ease-in-out whitespace-nowrap w-full sm:w-auto";
 
   const dropdownLinkClass =
-    "flex items-center gap-3 px-8 sm:px-4 py-2.5 text-gray-700 hover:bg-slate-100 hover:text-cyan-700 transition duration-150 ease-in-out";
+    "flex items-center gap-3 px-8 sm:px-4 py-2.5 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 transition duration-150 ease-in-out";
 
+  // handle outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!isMobileMenuOpen) {
@@ -65,21 +60,22 @@ const Navbar = () => {
 
   return (
     <div className="shadow-2xl bg-white sticky top-0 z-40 font-sans" ref={navRef}>
+      {/* 🔥 TOP BAR */}
       <div className="flex items-center justify-between p-3 bg-slate-800">
-        {/* ⭐ LOGO INTEGRATION HERE ⭐ */}
+        {/* ⭐ Poultry Farm Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 pl-3 group"
+          className="flex items-center gap-3 pl-3 group"
           onClick={closeAllMenus}>
-          <Egg className="w-7 h-7 text-cyan-400 group-hover:text-cyan-300 transition-colors duration-200" />{" "}
-          {/* Logo Icon */}
-          <span className="text-white text-2xl font-extrabold tracking-wide lg:text-3xl group-hover:text-gray-100 transition-colors duration-200">
-            Daily Poultry
+          <div className="flex items-center justify-center bg-emerald-600 rounded-full p-2 shadow-md group-hover:bg-emerald-500 transition">
+            <Bird className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-white text-2xl font-extrabold tracking-wide lg:text-3xl group-hover:text-gray-200 transition">
+            Poultry Manager
           </span>
         </Link>
-        {/* ⭐ END LOGO INTEGRATION ⭐ */}
 
-        {/* Hamburger/Close Button */}
+        {/* Hamburger */}
         <button
           className="sm:hidden p-2 rounded-full text-white hover:bg-slate-700 transition duration-150"
           onClick={() => {
@@ -91,141 +87,97 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Navigation Links Container */}
+      {/* 🔥 NAV LINKS */}
       <nav
         className={`
           flex flex-col sm:flex-row items-start sm:items-center bg-white 
           gap-x-2 gap-y-1 p-3 pt-2
-          sm:visible sm:h-auto sm:opacity-100
-          ${isMobileMenuOpen ? "visible h-auto opacity-100" : "hidden sm:flex"}
+          ${isMobileMenuOpen ? "block" : "hidden sm:flex"}
           transition-all duration-300 ease-in-out`}>
-        {/* Dashboard Link */}
+        {/* Dashboard */}
         <Link to="/" className={linkClass} onClick={closeAllMenus}>
-          <LayoutDashboard className="w-5 h-5 text-cyan-600" />
+          <LayoutDashboard className="w-5 h-5 text-emerald-600" />
           Dashboard
         </Link>
 
-        {/* Inventory Dropdown - Now shows as stacked list on mobile */}
+        {/* Inventory */}
         <div ref={inventoryRef} className="relative w-full sm:w-auto">
           <button
             onClick={() => {
-              if (isMobileMenuOpen) {
-                setInventoryOpen(!isInventoryOpen);
-              } else {
-                setInventoryOpen(!isInventoryOpen);
-                setReportOpen(false);
-              }
+              setInventoryOpen(!isInventoryOpen);
+              if (!isMobileMenuOpen) setReportOpen(false);
             }}
             className={dropdownButtonClass}>
             Inventory
             <ChevronDown
-              className={`w-4 h-4 transition-transform duration-300 ${
-                isInventoryOpen && !isMobileMenuOpen
-                  ? "rotate-180 text-cyan-600"
-                  : "rotate-0 text-gray-500"
-              } sm:${
-                isInventoryOpen ? "rotate-180 text-cyan-600" : "rotate-0 text-gray-500"
+              className={`w-4 h-4 transition-transform ${
+                isInventoryOpen ? "rotate-180 text-emerald-700" : "text-gray-500"
               }`}
             />
           </button>
 
-          {/* Conditional Rendering: Show nested links if on mobile OR if dropdown is open on desktop */}
-          <div
-            className={`
-            w-full sm:absolute sm:left-0 sm:mt-3 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 
-            sm:transition-all sm:duration-200 sm:transform sm:origin-top-left sm:z-10
-            ${
-              isMobileMenuOpen
-                ? "static visible h-auto opacity-100 shadow-none border-none"
-                : isInventoryOpen
-                ? "scale-100 opacity-100 visible"
-                : "scale-95 opacity-0 invisible"
-            }`}>
-            {(isMobileMenuOpen || isInventoryOpen) && (
+          {(isMobileMenuOpen || isInventoryOpen) && (
+            <div className="w-full sm:absolute sm:left-0 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 sm:mt-3">
               <div className="flex flex-col py-1">
                 <Link
                   to="/bird-inventory"
-                  onClick={() => handleLinkClick(setInventoryOpen)}
-                  className={`${dropdownLinkClass} rounded-t-xl sm:rounded-none`}>
-                  <Bird className="w-5 h-5 text-green-600" />
+                  className={`${dropdownLinkClass} rounded-t-xl`}
+                  onClick={() => setInventoryOpen(false)}>
+                  <Bird className="w-5 h-5 text-emerald-600" />
                   Birds Inventory
                 </Link>
 
                 <Link
                   to="/feed-inventory"
-                  onClick={() => handleLinkClick(setInventoryOpen)}
-                  className={`${dropdownLinkClass} rounded-b-xl sm:rounded-none`}>
-                  <Package className="w-5 h-5 text-amber-500" />
+                  className={`${dropdownLinkClass} rounded-b-xl`}
+                  onClick={() => setInventoryOpen(false)}>
+                  <Package className="w-5 h-5 text-amber-600" />
                   Feed Inventory
                 </Link>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* Reports Dropdown - Now shows as stacked list on mobile */}
+        {/* Reports */}
         <div ref={reportRef} className="relative w-full sm:w-auto">
           <button
             onClick={() => {
-              if (isMobileMenuOpen) {
-                setReportOpen(!isReportOpen);
-              } else {
-                setReportOpen(!isReportOpen);
-                setInventoryOpen(false);
-              }
+              setReportOpen(!isReportOpen);
+              if (!isMobileMenuOpen) setInventoryOpen(false);
             }}
             className={dropdownButtonClass}>
             Reports
             <ChevronDown
-              className={`w-4 h-4 transition-transform duration-300 ${
-                isReportOpen && !isMobileMenuOpen
-                  ? "rotate-180 text-cyan-600"
-                  : "rotate-0 text-gray-500"
-              } sm:${
-                isReportOpen ? "rotate-180 text-cyan-600" : "rotate-0 text-gray-500"
+              className={`w-4 h-4 transition-transform ${
+                isReportOpen ? "rotate-180 text-emerald-700" : "text-gray-500"
               }`}
             />
           </button>
 
-          {/* Conditional Rendering: Show nested links if on mobile OR if dropdown is open on desktop */}
-          <div
-            className={`
-            w-full sm:absolute sm:left-0 sm:mt-3 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 
-            sm:transition-all sm:duration-200 sm:transform sm:origin-top-left sm:z-10
-            ${
-              isMobileMenuOpen
-                ? "static visible h-auto opacity-100 shadow-none border-none"
-                : isReportOpen
-                ? "scale-100 opacity-100 visible"
-                : "scale-95 opacity-0 invisible"
-            }`}>
-            {(isMobileMenuOpen || isReportOpen) && (
+          {(isMobileMenuOpen || isReportOpen) && (
+            <div className="w-full sm:absolute sm:left-0 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 sm:mt-3">
               <div className="flex flex-col py-1">
                 <Link
                   to="/reports/daily-report"
-                  onClick={() => handleLinkClick(setReportOpen)}
-                  className={`${dropdownLinkClass} rounded-t-xl sm:rounded-none`}>
-                  <ClipboardList className="w-5 h-5 text-cyan-500" />
+                  className={`${dropdownLinkClass} rounded-t-xl`}>
+                  <ClipboardList className="w-5 h-5 text-emerald-600" />
                   Daily Report
                 </Link>
 
-                <Link
-                  to="/reports/feed-inventory"
-                  onClick={() => handleLinkClick(setReportOpen)}
-                  className={dropdownLinkClass}>
+                <Link to="/reports/feed-inventory" className={dropdownLinkClass}>
                   <Wheat className="w-5 h-5 text-amber-600" />
-                  Feed Usage Report
+                  Feed Usage
                 </Link>
 
                 <Link
                   to="/reports/birds-inventory"
-                  onClick={() => handleLinkClick(setReportOpen)}
-                  className={`${dropdownLinkClass} rounded-b-xl sm:rounded-none`}>
-                  <Bird className="w-5 h-5 text-green-600" /> Batch Report
+                  className={`${dropdownLinkClass} rounded-b-xl`}>
+                  <Bird className="w-5 h-5 text-emerald-600" /> Batch Report
                 </Link>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </nav>
     </div>

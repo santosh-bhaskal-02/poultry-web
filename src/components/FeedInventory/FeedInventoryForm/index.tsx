@@ -1,21 +1,35 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import dayjs from "dayjs";
-import { ChevronDownIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  PackageIcon,
+  TruckIcon,
+  UserIcon,
+  PhoneIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  LeafIcon,
+  SaladIcon,
+  ChevronDownIcon,
+} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import InputField from "@/components/Common/InputField";
+
 import type { FeedInventoryFormData } from "@/types";
 import { useQueryClient } from "@tanstack/react-query";
 import useCreateFeedInventory from "@/hooks/FeedInventory/useCreateFeedInventory";
+import { toast } from "sonner";
 
 const FeedInventory = () => {
   const queryClient = useQueryClient();
-  // const BASE_URL = import.meta.env.VITE_API_URL;
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  // const [date, setdate] = useState<Date | undefined>(new Date());
 
   const [formData, setFormData] = useState<FeedInventoryFormData>({
     date: new Date(),
@@ -29,15 +43,13 @@ const FeedInventory = () => {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const resetForm = () => {
     setFormData({
-      date: dayjs(formData.date).format("YYYY-MM-DDTHH:mm:ss"),
+      date: new Date(),
       feedName: "",
       bagsArrivedCount: "",
       driverName: "",
@@ -57,118 +69,143 @@ const FeedInventory = () => {
         driverName: formData.driverName,
         driverPhoneNumber: formData.driverPhoneNumber,
       };
+
       createFeedInventory(
         { feedInventory: payload },
         {
           onSuccess: () => {
-            console.log("success");
-            queryClient.invalidateQueries({
-              queryKey: ["get-all-feedInventories"],
-            });
+            toast.success("Feed inventory added successfully");
+            queryClient.invalidateQueries({ queryKey: ["get-all-feedInventories"] });
             queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
+            resetForm();
           },
           onError: (error) => {
-            console.log(error);
+            toast.error(error?.message || "Failed to add feed inventory");
           },
         }
       );
-      // const response = await axios.post(`${BASE_URL}/api/feedinventory`, payload);
-      // console.log("Feed Inventory submitted:", response.data);
-      resetForm();
-    } catch (error) {
-      console.error("Error submitting feed inventory:", error);
     } finally {
-      setTimeout(() => setSubmitting(false), 1000);
+      setTimeout(() => setSubmitting(false), 800);
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-6 bg-white shadow-sm rounded-lg p-6 w-full max-w-5xl mx-auto">
-      <h2 className="text-2xl font-semibold text-blue-600">Feed Inventory Entry</h2>
+      className="flex flex-col gap-6 mb-20 p-5 sm:p-7 bg-gradient-to-br from-emerald-50 via-white to-emerald-100 shadow-xl rounded-2xl border-t-4 border-emerald-500 w-full">
+      <h2 className="text-3xl font-extrabold text-emerald-700 text-center flex items-center justify-center gap-3">
+        <LeafIcon className="w-9 h-9 text-emerald-600" />
+        Feed Inventory Entry
+      </h2>
 
-      <div className="flex flex-col gap-2 w-fit">
-        <Label htmlFor="date" className="font-medium">
-          Date
-        </Label>
+      <hr className="border-emerald-200" />
+
+      {/* Date Section */}
+      <div className="bg-white p-5 rounded-xl shadow-md border border-emerald-100 flex flex-col gap-4">
+        <h3 className="text-lg font-semibold text-emerald-700 flex items-center gap-2">
+          <CalendarIcon className="w-5 h-5 text-emerald-600" />
+          Entry Date
+        </h3>
+
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               id="date"
-              className="w-44 h-10 justify-between font-normal border-gray-300">
-              {formData.date ? dayjs(formData.date).format("DD/MM/YYYY") : "Select date"}
-              <ChevronDownIcon />
+              className="w-full sm:w-60 h-11 justify-between font-medium border-emerald-400 text-emerald-700 bg-emerald-50 hover:bg-emerald-100">
+              {dayjs(formData.date).format("DD/MM/YYYY")}
+              <ChevronDownIcon className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-full p-0" align="start">
+
+          <PopoverContent className="w-full p-0">
             <Calendar
               mode="single"
-              className="w-72"
               selected={formData.date}
-              captionLayout="dropdown"
               onSelect={(d) => {
-                setFormData({ ...formData, date: d });
+                setFormData({ ...formData, date: d || new Date() });
                 setCalendarOpen(false);
               }}
+              className="w-72"
             />
           </PopoverContent>
         </Popover>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
-        <InputField
-          label="Feed Name"
-          name="feedName"
-          type="text"
-          value={formData.feedName}
-          onChange={handleInputChange}
-          required
-        />
+      {/* Feed Details */}
+      <div className="bg-white p-5 rounded-xl shadow-md border border-emerald-100 w-full">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center gap-2">
+          <SaladIcon className="w-5 h-5 text-emerald-600" /> Feed Details
+        </h3>
 
-        <InputField
-          label="Bags Arrived"
-          name="bagsArrivedCount"
-          type="number"
-          value={formData.bagsArrivedCount}
-          onChange={handleInputChange}
-          required
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <InputField
+            label="Feed Name"
+            name="feedName"
+            value={formData.feedName}
+            type="text"
+            onChange={handleInputChange}
+            icon={<PackageIcon className="w-4 h-4 text-emerald-600" />}
+          />
 
-        <InputField
-          label="Driver Name"
-          name="driverName"
-          type="text"
-          value={formData.driverName}
-          onChange={handleInputChange}
-          required
-        />
-
-        <InputField
-          label="Driver Phone Number"
-          name="driverPhoneNumber"
-          type="number"
-          value={formData.driverPhoneNumber}
-          onChange={handleInputChange}
-          required
-        />
+          <InputField
+            label="Bags Arrived"
+            name="bagsArrivedCount"
+            value={formData.bagsArrivedCount}
+            type="number"
+            onChange={handleInputChange}
+            icon={<PackageIcon className="w-4 h-4 text-emerald-600" />}
+          />
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-5 mt-4">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-40 h-10 bg-blue-600 text-white hover:bg-blue-700 font-semibold">
-          {isSubmitting ? "Submitting..." : "Submit"}
-        </Button>
+      {/* Driver Information */}
+      <div className="bg-white p-5 rounded-xl shadow-md border border-emerald-100 w-full">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center gap-2">
+          <TruckIcon className="w-5 h-5 text-emerald-600" /> Driver Details
+        </h3>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <InputField
+            label="Driver Name"
+            name="driverName"
+            value={formData.driverName}
+            type="text"
+            onChange={handleInputChange}
+            icon={<UserIcon className="w-4 h-4 text-emerald-600" />}
+          />
+
+          <InputField
+            label="Driver Phone Number"
+            name="driverPhoneNumber"
+            value={formData.driverPhoneNumber}
+            type="number"
+            onChange={handleInputChange}
+            icon={<PhoneIcon className="w-4 h-4 text-emerald-600" />}
+          />
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div className="flex justify-end gap-4 mt-2">
         <Button
           type="button"
           onClick={resetForm}
-          variant="secondary"
-          className="w-40 h-10 bg-gray-400 text-white hover:bg-gray-600 font-semibold">
-          Cancel
+          className="w-auto px-4 h-11 bg-gray-300 text-gray-800 hover:bg-gray-400 font-semibold flex items-center gap-2 rounded-lg">
+          <XCircleIcon className="w-5 h-5" /> Cancel
+        </Button>
+
+        <Button
+          disabled={isSubmitting}
+          type="submit"
+          className="w-auto px-4 h-11 bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-colors shadow-lg flex items-center gap-2 rounded-lg">
+          {isSubmitting ? (
+            "Submitting..."
+          ) : (
+            <>
+              <CheckCircleIcon className="w-5 h-5" /> Submit Entry
+            </>
+          )}
         </Button>
       </div>
     </form>

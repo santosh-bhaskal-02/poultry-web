@@ -10,7 +10,8 @@ interface InputFieldProps {
   required?: boolean;
   disabled?: boolean;
   className?: string;
-  icon?: ReactNode; // ✅ icon type added
+  min?: number;
+  icon?: ReactNode;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -25,6 +26,7 @@ const InputField = ({
   className = "",
   icon,
   onChange,
+  min = 0,
 }: InputFieldProps) => {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
@@ -43,6 +45,7 @@ const InputField = ({
           value={value}
           onChange={onChange}
           type={type}
+          min={min}
           placeholder={placeholder}
           disabled={disabled}
           className={`w-full appearance-none border border-gray-300 rounded-md h-10 pl-3 pr-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${

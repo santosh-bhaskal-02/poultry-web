@@ -42,7 +42,7 @@ const FeedInventoryReport = () => {
   // console.log("BirdInven tory", report);
 
   return (
-    <div className="px-2 py-5">
+    <div className="px-0 py-5">
       <DataTable data={reports?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
         <EditFeedInventoryModal

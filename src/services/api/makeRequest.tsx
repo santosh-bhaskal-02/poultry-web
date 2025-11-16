@@ -23,6 +23,7 @@ const makeRequest = async <T,>({
     return { ...response.data };
   } catch (error) {
     console.log(error);
+    throw error.response?.data || new Error("Something went wrong");
   }
 };
 export default makeRequest;

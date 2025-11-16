@@ -1,2 +1,2 @@
-import BirdInventory from "./BirdInventoryForm";
-export default BirdInventory;
+import BirdInventoryForm from "./BirdInventoryForm";
+export default BirdInventoryForm;

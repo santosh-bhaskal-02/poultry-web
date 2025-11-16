@@ -35,7 +35,7 @@ const DashboardSummary = () => {
 
   return (
     <>
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mx-2">
         {summaryData.map((item, i) => (
           <SummaryCard
             key={i}
