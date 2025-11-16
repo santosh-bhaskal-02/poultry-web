@@ -71,7 +71,7 @@ const AddDailyRecordModal = ({ open, onClose }: AddDailyRecordModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+      className="fixed inset-0 z-50 px-4 flex items-center justify-center bg-gray-500 backdrop-blur-sm transition-opacity duration-300"
       // Close modal when clicking outside of the form
       onClick={onClose}>
       {/* Form Container (Modal Content) */}

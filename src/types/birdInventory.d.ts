@@ -10,6 +10,7 @@ export interface BirdInventoryFormData {
   boxMortalityCount: number | string; // Dead birds in boxes
   disabledBirdCount: number | string; // Birds that cannot walk / leg issues
   weakBirdCount: number | string; // Weak but active birds
+  shortBirdCount: number | string;
   excessBirdCount: number | string; // Extra birds found
   housedBirdCount: number | string; // Birds housed after adjustments
 }

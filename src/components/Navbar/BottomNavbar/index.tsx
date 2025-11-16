@@ -9,14 +9,17 @@ import {
   Wheat,
   Menu,
   X,
-  ClipboardList,
-  Egg, // 🥚 New Icon for the logo
+  Plus,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import AddDailyRecordModal from "@/components/Common/Modal/AddDailyRecordModal";
 
-const Navbar = () => {
+// Renamed the component to reflect its new position
+const BottomNavBar = () => {
   const [isReportOpen, setReportOpen] = useState(false);
   const [isInventoryOpen, setInventoryOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isOpenModal, setOpenModal] = useState(false);
 
   const reportRef = useRef(null);
   const inventoryRef = useRef(null);
@@ -35,17 +38,20 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   };
 
+  // --- Aesthetic Classes (Retained) ---
   const linkClass =
-    "text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 transition duration-200 ease-in-out flex items-center gap-2 whitespace-nowrap w-full sm:w-auto";
+    "text-base font-medium px-4 py-3 rounded-xl text-gray-800 hover:bg-blue-50 hover:text-blue-700 transition duration-200 ease-in-out flex items-center gap-2 whitespace-nowrap w-full sm:w-auto";
 
   const dropdownButtonClass =
-    "flex justify-between items-center gap-1 text-base font-semibold px-4 py-2.5 rounded-xl text-slate-700 hover:bg-cyan-50 hover:text-cyan-700 transition duration-200 ease-in-out whitespace-nowrap w-full sm:w-auto";
+    "flex justify-between items-center gap-1 text-base font-medium px-4 py-3 rounded-xl text-gray-800 hover:bg-blue-50 hover:text-blue-700 transition duration-200 ease-in-out whitespace-nowrap w-full sm:w-auto";
 
   const dropdownLinkClass =
-    "flex items-center gap-3 px-8 sm:px-4 py-2.5 text-gray-700 hover:bg-slate-100 hover:text-cyan-700 transition duration-150 ease-in-out";
+    "flex items-center gap-3 px-10 sm:px-4 py-2 text-gray-700 hover:bg-blue-100/50 hover:text-blue-700 transition duration-150 ease-in-out";
+  // ------------------------------------
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+      // Only close dropdowns on desktop/tablet if the full mobile menu is not active
       if (!isMobileMenuOpen) {
         if (reportRef.current && !reportRef.current.contains(e.target)) {
           setReportOpen(false);
@@ -54,6 +60,7 @@ const Navbar = () => {
           setInventoryOpen(false);
         }
       }
+      // Close the mobile menu if clicking outside the nav area
       if (navRef.current && !navRef.current.contains(e.target) && isMobileMenuOpen) {
         setMobileMenuOpen(false);
       }
@@ -64,48 +71,57 @@ const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   return (
-    <div className="shadow-2xl bg-white sticky top-0 z-40 font-sans" ref={navRef}>
-      <div className="flex items-center justify-between p-3 bg-slate-800">
-        {/* ⭐ LOGO INTEGRATION HERE ⭐ */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 pl-3 group"
-          onClick={closeAllMenus}>
-          <Egg className="w-7 h-7 text-cyan-400 group-hover:text-cyan-300 transition-colors duration-200" />{" "}
-          {/* Logo Icon */}
-          <span className="text-white text-2xl font-extrabold tracking-wide lg:text-3xl group-hover:text-gray-100 transition-colors duration-200">
-            Daily Poultry
-          </span>
-        </Link>
-        {/* ⭐ END LOGO INTEGRATION ⭐ */}
+    <>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-40 bg-white shadow-2xl border-t-1 border-gray-300 sm:hidden"
+        ref={navRef}>
+        <div className="flex items-center justify-between p-3">
+          {/* You could place a quick-access link here, e.g., Dashboard */}
+          <Link
+            to="/"
+            className="text-white flex flex-col items-center p-1 rounded-lg bg-blue-600 hover:bg-blue-500 transition"
+            onClick={closeAllMenus}>
+            <LayoutDashboard className="w-6 h-6" />
+            <span className="text-xs font-medium">Dashboard</span>
+          </Link>
 
-        {/* Hamburger/Close Button */}
-        <button
-          className="sm:hidden p-2 rounded-full text-white hover:bg-slate-700 transition duration-150"
-          onClick={() => {
-            setMobileMenuOpen(!isMobileMenuOpen);
-            setReportOpen(false);
-            setInventoryOpen(false);
-          }}>
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+          {/* Hamburger/Close Button is the main trigger */}
+
+          <Button
+            onClick={() => setOpenModal(true)}
+            className="w-12 h-12 rounded-full bg-amber-400 shadow-2xl transition-transform duration-300 hover:scale-105 hover:bg-amber-500 hover:shadow-lg focus:ring-blue-300">
+            <Plus className="w-7 h-7" />
+          </Button>
+          <AddDailyRecordModal
+            open={isOpenModal}
+            onClose={() => setOpenModal(!isOpenModal)}
+          />
+
+          {/* Placeholder for another quick link (e.g., Inventory) */}
+          <button
+            className="p-3 rounded-full text-white bg-blue-700 hover:bg-blue-500 transition duration-150"
+            onClick={() => {
+              setMobileMenuOpen(!isMobileMenuOpen);
+              setReportOpen(false);
+              setInventoryOpen(false);
+            }}>
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
-      {/* Navigation Links Container */}
+      {/* 2. OVERLAY MENU CONTENT (Visible only when toggled) */}
+      {/* 🌟 NEW STRUCTURE: Full-screen overlay for mobile, hidden on desktop (sm:flex) */}
       <nav
         className={`
-          flex flex-col sm:flex-row items-start sm:items-center bg-white 
-          gap-x-2 gap-y-1 p-3 pt-2
-          sm:visible sm:h-auto sm:opacity-100
-          ${isMobileMenuOpen ? "visible h-auto opacity-100" : "hidden sm:flex"}
-          transition-all duration-300 ease-in-out`}>
-        {/* Dashboard Link */}
-        <Link to="/" className={linkClass} onClick={closeAllMenus}>
-          <LayoutDashboard className="w-5 h-5 text-cyan-600" />
-          Dashboard
-        </Link>
-
-        {/* Inventory Dropdown - Now shows as stacked list on mobile */}
+          flex flex-col items-start bg-white shadow-2xl absolute w-full 
+          transition-all duration-300 ease-in-out z-40 p-5 
+          ${
+            isMobileMenuOpen
+              ? "visible opacity-100 h-auto bottom-16" // Start above the fixed bottom bar
+              : "invisible opacity-0 h-0 bottom-16"
+          }
+          sm:flex sm:flex-row sm:items-center sm:visible sm:h-auto sm:opacity-100 sm:static sm:bg-white sm:shadow-none sm:p-3 sm:z-auto sm:gap-x-2 sm:gap-y-1`}>
         <div ref={inventoryRef} className="relative w-full sm:w-auto">
           <button
             onClick={() => {
@@ -121,15 +137,14 @@ const Navbar = () => {
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-300 ${
                 isInventoryOpen && !isMobileMenuOpen
-                  ? "rotate-180 text-cyan-600"
+                  ? "rotate-180 text-blue-600"
                   : "rotate-0 text-gray-500"
               } sm:${
-                isInventoryOpen ? "rotate-180 text-cyan-600" : "rotate-0 text-gray-500"
+                isInventoryOpen ? "rotate-180 text-blue-600" : "rotate-0 text-gray-500"
               }`}
             />
           </button>
 
-          {/* Conditional Rendering: Show nested links if on mobile OR if dropdown is open on desktop */}
           <div
             className={`
             w-full sm:absolute sm:left-0 sm:mt-3 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 
@@ -147,7 +162,7 @@ const Navbar = () => {
                   to="/bird-inventory"
                   onClick={() => handleLinkClick(setInventoryOpen)}
                   className={`${dropdownLinkClass} rounded-t-xl sm:rounded-none`}>
-                  <Bird className="w-5 h-5 text-green-600" />
+                  <Bird className="w-5 h-5 text-green-500" />
                   Birds Inventory
                 </Link>
 
@@ -155,7 +170,7 @@ const Navbar = () => {
                   to="/feed-inventory"
                   onClick={() => handleLinkClick(setInventoryOpen)}
                   className={`${dropdownLinkClass} rounded-b-xl sm:rounded-none`}>
-                  <Package className="w-5 h-5 text-amber-500" />
+                  <Package className="w-5 h-5 text-yellow-500" />
                   Feed Inventory
                 </Link>
               </div>
@@ -163,7 +178,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Reports Dropdown - Now shows as stacked list on mobile */}
+        {/* Reports Dropdown - Stacked List on Mobile */}
         <div ref={reportRef} className="relative w-full sm:w-auto">
           <button
             onClick={() => {
@@ -179,15 +194,14 @@ const Navbar = () => {
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-300 ${
                 isReportOpen && !isMobileMenuOpen
-                  ? "rotate-180 text-cyan-600"
+                  ? "rotate-180 text-blue-600"
                   : "rotate-0 text-gray-500"
               } sm:${
-                isReportOpen ? "rotate-180 text-cyan-600" : "rotate-0 text-gray-500"
+                isReportOpen ? "rotate-180 text-blue-600" : "rotate-0 text-gray-500"
               }`}
             />
           </button>
 
-          {/* Conditional Rendering: Show nested links if on mobile OR if dropdown is open on desktop */}
           <div
             className={`
             w-full sm:absolute sm:left-0 sm:mt-3 sm:w-56 sm:bg-white sm:rounded-xl sm:shadow-2xl sm:border sm:border-gray-200 
@@ -205,7 +219,7 @@ const Navbar = () => {
                   to="/reports/daily-report"
                   onClick={() => handleLinkClick(setReportOpen)}
                   className={`${dropdownLinkClass} rounded-t-xl sm:rounded-none`}>
-                  <ClipboardList className="w-5 h-5 text-cyan-500" />
+                  <ListOrdered className="w-5 h-5 text-blue-600" />
                   Daily Report
                 </Link>
 
@@ -213,7 +227,7 @@ const Navbar = () => {
                   to="/reports/feed-inventory"
                   onClick={() => handleLinkClick(setReportOpen)}
                   className={dropdownLinkClass}>
-                  <Wheat className="w-5 h-5 text-amber-600" />
+                  <Wheat className="w-5 h-5 text-yellow-600" />
                   Feed Usage Report
                 </Link>
 
@@ -228,8 +242,8 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-    </div>
+    </>
   );
 };
 
-export default Navbar;
+export default BottomNavBar;

@@ -12,12 +12,14 @@ import FeedInventory from "@/Pages/FeedInventory";
 import DashboardPage from "@/Pages/DashBoard";
 import { BirdInventoryPage, DailyReportPage, FeedInventoryPage } from "@/Pages/Reports";
 import { Toaster } from "sonner";
+import BottomNavBar from "@/components/Navbar/BottomNavbar";
 const Layout = () => (
   <>
     <Navbar />
     <main>
       <Outlet />
     </main>
+    <BottomNavBar />
     <Toaster richColors position="top-right" closeButton />
   </>
 );

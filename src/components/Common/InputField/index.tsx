@@ -2,7 +2,7 @@ import type { ChangeEvent, ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 
 interface InputFieldProps {
-  label: string;
+  label?: string;
   name: string;
   value: string | number;
   type?: string;
