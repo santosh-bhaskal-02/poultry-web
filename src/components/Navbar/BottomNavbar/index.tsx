@@ -12,9 +12,9 @@ const BottomNavBar = () => {
   const navItems = [
     { to: "/", label: "Home", icon: <Home className="w-6 h-6" /> },
     { to: "/inventories", label: "Inventories", icon: <Bird className="w-6 h-6" /> },
-    { to: "/", label: "Others", icon: <BarChart3 className="w-6 h-6" /> },
+    { to: "/stock-out", label: "Stock out", icon: <BarChart3 className="w-6 h-6" /> },
     {
-      to: "/reports/daily-report",
+      to: "/report",
       label: "Reports",
       icon: <BarChart3 className="w-6 h-6" />,
     },
@@ -75,7 +75,6 @@ const BottomNavBar = () => {
             </button>
           </div>
 
-          {/* Feed */}
           <Link to={navItems[2].to} className="flex flex-col items-center">
             <div
               className={`

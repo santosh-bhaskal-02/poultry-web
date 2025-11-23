@@ -9,10 +9,13 @@ interface InputFieldProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
   className?: string;
   min?: number;
   icon?: ReactNode;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  error?: string | false;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const InputField = ({
@@ -23,36 +26,63 @@ const InputField = ({
   placeholder = "",
   required = false,
   disabled = false,
+  readOnly = false,
   className = "",
   icon,
   onChange,
+  onBlur,
   min = 0,
+  error,
 }: InputFieldProps) => {
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
-      <Label
-        htmlFor={name}
-        className="font-medium text-base text-gray-700 flex items-center gap-2">
-        {icon && <span className="text-blue-600">{icon}</span>}
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
+    <div className={`flex flex-col gap-2 w-full ${className}`}>
+      {label && (
+        <Label
+          htmlFor={name}
+          className="font-medium text-base text-gray-700 flex items-center gap-2">
+          {icon && <span className="text-blue-600">{icon}</span>}
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </Label>
+      )}
 
       <div className="relative">
+        {icon && (
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-600 pointer-events-none">
+            {icon}
+          </span>
+        )}
+
         <input
           id={name}
           name={name}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           type={type}
           min={min}
           placeholder={placeholder}
           disabled={disabled}
-          className={`w-full appearance-none border border-gray-300 rounded-md h-10 pl-3 pr-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-            disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"
-          }`}
+          readOnly={readOnly}
+          className={`w-full appearance-none border rounded-md h-10 
+            ${icon ? "pl-10 pr-3" : "px-3"} 
+            text-gray-700 placeholder-gray-400 
+            focus:outline-none focus:ring-1 transition-all duration-200
+            ${
+              error
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-500"
+            }
+            ${
+              disabled || readOnly
+                ? "bg-gray-100 cursor-not-allowed text-gray-500"
+                : "bg-white"
+            }
+          `}
         />
       </div>
+
+      {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
     </div>
   );
 };

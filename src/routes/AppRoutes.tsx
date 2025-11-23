@@ -15,6 +15,9 @@ import { Toaster } from "sonner";
 import BottomNavBar from "@/components/Navbar/BottomNavbar";
 import BirdInventoryForm from "@/components/BirdInventory/BirdInventoryForm";
 import Inventory from "@/components/Inventories";
+import StockOut from "@/components/StockOut";
+import StockOutForm from "@/components/StockOut/StockOutForm";
+import FinalReportPage from "@/Pages/FinalReport";
 const Layout = () => (
   <>
     {/* <Navbar /> */}
@@ -39,6 +42,9 @@ const AppRoutes = () => {
           <Route path="/bird-inventory" element={<BirdInventory />} />
           <Route path="/feed-inventory" element={<FeedInventory />} />
           <Route path="/inventories" element={<Inventory />} />
+          <Route path="/stock-out" element={<StockOut />} />
+          <Route path="/stock-out/add" element={<StockOutForm />} />
+          <Route path="/report" element={<FinalReportPage />} />
 
           {/* Reports Section */}
           <Route path="/reports">

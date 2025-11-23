@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Bird, PlusCircle, Warehouse, ClipboardList, Package } from "lucide-react";
 
-import BirdsInventoryReport from "../Reports/InventoryReport/BirdInventory";
-import { FeedInventoryReport } from "../Reports";
+import BirdsInventoryReport from "../Records/InventoryReport/BirdInventory";
+import { FeedInventoryReport } from "../Records";
 
 const Inventory = () => {
   const navigate = useNavigate();

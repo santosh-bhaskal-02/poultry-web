@@ -147,7 +147,7 @@ const Navbar = () => {
               if (!isMobileMenuOpen) setInventoryOpen(false);
             }}
             className={dropdownButtonClass}>
-            Reports
+            Records
             <ChevronDown
               className={`w-4 h-4 transition-transform ${
                 isReportOpen ? "rotate-180 text-emerald-700" : "text-gray-500"

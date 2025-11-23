@@ -41,7 +41,7 @@ const DailyReport = () => {
   ];
 
   return (
-    <div className="py-2">
+    <div className="py-2 mb-10">
       <DataTable data={records?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
         <EditDailyRecordModal

@@ -1,4 +1,4 @@
-import DailyReport from "@/components/Reports/DailyReport";
+import DailyReport from "@/components/Records/DailyReport";
 
 const DailyReportPage = () => {
   return (

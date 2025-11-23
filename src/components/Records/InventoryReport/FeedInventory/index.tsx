@@ -9,7 +9,7 @@ const FeedInventoryReport = () => {
   // const [report, setReport] = useState([]);
   const [editRecord, setEditRecord] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const { data: reports, isPending } = useGetAllFeedInventory();
+  const { data: records, isPending } = useGetAllFeedInventory();
   // console.log("feeedRepor", reports);
   // useEffect(() => {
   //   const fetchReport = async () => {
@@ -43,7 +43,7 @@ const FeedInventoryReport = () => {
 
   return (
     <div className="px-0 py-5">
-      <DataTable data={reports?.data} columns={columns} onRowClick={handleEdit} />
+      <DataTable data={records?.data} columns={columns} onRowClick={handleEdit} />
       {editRecord && (
         <EditFeedInventoryModal
           editData={editRecord}

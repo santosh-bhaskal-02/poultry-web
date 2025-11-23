@@ -1,4 +1,4 @@
-import { FeedInventoryReport } from "@/components/Reports";
+import { FeedInventoryReport } from "@/components/Records";
 
 const BirdInventoryReportPage = () => {
   return (

@@ -1,4 +1,4 @@
-import BirdInventoryReport from "@/components/Reports/InventoryReport/BirdInventory";
+import BirdInventoryReport from "@/components/Records/InventoryReport/BirdInventory";
 
 const BirdInventoryReportPage = () => {
   return (
