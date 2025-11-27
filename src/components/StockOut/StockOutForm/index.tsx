@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import {
   BirdIcon,
@@ -24,38 +24,18 @@ import { Calendar } from "../../ui/calendar";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Label } from "../../ui/label";
-import useCreateStockOutEntry from "@/hooks/StockOut/useCreateStockOut";
-
-type StockOutEntry = {
-  srNo: number;
-  birds: number;
-  weight: number;
-};
-
-interface StockOutFormValues {
-  date: Date;
-  batchNo: string;
-  stockOutNo: string;
-  birdsToAdd: string;
-  weightToAdd: string;
-}
-
-interface UpdatedBirdInventoryFormData {
-  date: string;
-  batchNo: number;
-  entries: StockOutEntry[];
-  totalBirds: number;
-  totalWeight: number;
-  avgWeight: number;
-}
-
-const initialValues: StockOutFormValues = {
-  date: new Date(),
-  batchNo: "",
-  stockOutNo: "",
-  birdsToAdd: "",
-  weightToAdd: "",
-};
+import useCreateStockOut from "@/hooks/StockOut/useCreateStockOut";
+import useCreateStockOutEntry from "@/hooks/StockOut/useCreateStockOutEntry";
+import type {
+  StockOutEntry,
+  StockOutFormValues,
+  StockOutMasterFormData,
+  UpdatedBirdInventoryFormData,
+} from "@/types/stockOut";
+import useCreateFinalStockOut from "@/hooks/StockOut/useCreateFinalStockOut";
+import { useParams } from "react-router-dom";
+import useGetAllStockOutEntries from "@/hooks/StockOut/useGetAllStockOutEntries";
+import useDeleteStockOutEntry from "@/hooks/StockOut/useDeleteStockOutEntry";
 
 const validationSchema = Yup.object({
   batchNo: Yup.number()
@@ -69,39 +49,64 @@ const validationSchema = Yup.object({
 });
 
 const StockOut = () => {
+  const { id } = useParams();
   const queryClient = useQueryClient();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [entries, setEntries] = useState<StockOutEntry[]>([]);
 
-  const { mutate: createStockOutEntry, isPending: isSubmitting } =
-    useCreateStockOutEntry();
+  const { mutate: createFinalStockOut, isPending: isSubmitting } =
+    useCreateFinalStockOut();
+  const { mutate: createStockOutEntry, isPending } = useCreateStockOutEntry();
+  const { data: stockOutEntries, isPending: isFetching } = useGetAllStockOutEntries({
+    masterId: id,
+  });
+  const { mutate: deleteStockOutEntry } = useDeleteStockOutEntry();
 
+  console.log("stockOutEntries", stockOutEntries?.entries);
+  useEffect(() => {
+    if (Array.isArray(stockOutEntries?.entries)) {
+      setEntries(stockOutEntries?.entries || []);
+    }
+  }, [stockOutEntries]);
+
+  const totalEntries = entries.length;
   const totalBirds = entries.reduce((acc, entry) => acc + entry.birds, 0);
   const totalWeight = entries.reduce((acc, entry) => acc + entry.weight, 0);
   const averageWeight = totalBirds > 0 ? totalWeight / totalBirds : 0;
 
   const lastEntryBirdCount = entries.length > 0 ? entries[entries.length - 1].birds : 0;
 
-  const formik = useFormik<StockOutFormValues>({
-    initialValues,
+  const formik = useFormik({
+    initialValues: {
+      date: dayjs(new Date()),
+      batchNo: "",
+      stockOutNo: "",
+      birdsToAdd: "",
+      weightToAdd: "",
+      stockOutMasterId: id,
+      // entries: [], // NEVER use async data here
+    },
+
     validationSchema,
     onSubmit: (values) => {
       if (entries.length === 0) {
         toast.error("Please add at least one entry to the table.");
         return;
       }
-      const payload: UpdatedBirdInventoryFormData = {
+      const payload = {
         date: dayjs(values.date).format("YYYY-MM-DDTHH:mm:ss"),
-        batchNo: Number(values.batchNo),
-
-        entries: entries,
+        // batchNo: Number(values.batchNo),
+        stockOutNo: Number(values.stockOutNo),
+        masterId: id,
+        // entries: entries,
+        totalEntries: entries.length,
         totalBirds: totalBirds,
         totalWeight: totalWeight,
         avgWeight: averageWeight,
       };
 
-      createStockOutEntry(
-        { stockOutEntry: payload },
+      createFinalStockOut(
+        { id: id, finalStockOut: payload },
         {
           onSuccess: (res: any) => {
             toast.success(res.message || "Stock Out Entry Added Successfully!");
@@ -150,12 +155,29 @@ const StockOut = () => {
       return;
     }
 
-    const newEntry: StockOutEntry = {
+    console.log("masterId", id);
+
+    const newEntry = {
       srNo: entries.length + 1,
+      stockOutMasterId: Number(id),
       birds: newBirdCount,
       weight: newWeight,
     };
-    setEntries((prev) => [...prev, newEntry]);
+    // setEntries((prev) => [...prev, newEntry]);
+
+    createStockOutEntry(
+      { stockOutEntry: newEntry },
+      {
+        onSuccess: (res: any) => {
+          toast.success(res.message || "Stock Out Entry Added Successfully!");
+          // formik.resetForm();
+          setEntries((prev) => [...prev, res.entry]);
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || "Error occcured.");
+        },
+      }
+    );
 
     formik.setFieldValue("weightToAdd", "");
     formik.setFieldTouched("weightToAdd", false);
@@ -167,6 +189,20 @@ const StockOut = () => {
   };
 
   const deleteEntry = (srNo: number) => {
+    deleteStockOutEntry(
+      { id: srNo },
+      {
+        onSuccess: (res: any) => {
+          toast.success(res.message || "Stock Out Entry deleted Successfully!");
+          queryClient.invalidateQueries({ queryKey: ["get-all-stock-out-entries"] });
+          formik.resetForm();
+          setEntries([]);
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || "Error occcured.");
+        },
+      }
+    );
     setEntries((prev) =>
       prev.filter((e) => e.srNo !== srNo).map((e, index) => ({ ...e, srNo: index + 1 }))
     );
@@ -274,6 +310,19 @@ const StockOut = () => {
 
           <div className="flex gap-2 py-2 items-end">
             <InputField
+              label="Sr No"
+              name="srNo"
+              type="number"
+              value={entries.length + 1}
+              // onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.weightToAdd && formik.errors.weightToAdd}
+              // icon={<ScaleIcon className="w-4 h-4 text-emerald-600" />}
+              placeholder="SrNo"
+              className="!w-15"
+            />
+
+            <InputField
               label={`No. of Birds ${
                 lastEntryBirdCount > 0 ? `(Default: ${lastEntryBirdCount})` : ""
               }`}
@@ -372,6 +421,15 @@ const StockOut = () => {
             <HomeIcon className="w-6 h-6 text-emerald-600" /> Summary Totals
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 pt-4">
+            <InputField
+              label="Total Entries"
+              name="totalEntries"
+              type="number"
+              value={totalEntries}
+              readOnly
+              icon={<ScaleIcon className="w-4 h-4 text-emerald-600" />}
+              className="bg-emerald-50 font-bold p-2 rounded-lg"
+            />
             {/* Total Birds */}
             <InputField
               label="Total Birds"

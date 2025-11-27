@@ -43,7 +43,7 @@ const AppRoutes = () => {
           <Route path="/feed-inventory" element={<FeedInventory />} />
           <Route path="/inventories" element={<Inventory />} />
           <Route path="/stock-out" element={<StockOut />} />
-          <Route path="/stock-out/add" element={<StockOutForm />} />
+          <Route path="/stock-out/add/:id" element={<StockOutForm />} />
           <Route path="/report" element={<FinalReportPage />} />
 
           {/* Reports Section */}

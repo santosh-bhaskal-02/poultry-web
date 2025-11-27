@@ -1,12 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { Bird, PlusCircle, Warehouse, ClipboardList, Package } from "lucide-react";
+import { Bird, PlusCircle } from "lucide-react";
 
-import BirdsInventoryReport from "../Records/InventoryReport/BirdInventory";
-import { FeedInventoryReport, StockOutReport } from "../Records";
+import { StockOutReport } from "../Records";
+import useCreateStockOut from "@/hooks/StockOut/useCreateStockOut";
+import { toast } from "sonner";
 
 const StockOut = () => {
   const navigate = useNavigate();
+
+  const { mutate: createStockOut, isPending: isSubmitting } = useCreateStockOut();
+
+  const handleCreateStockOut = () => {
+    createStockOut(
+      {},
+      {
+        onSuccess: (res: any) => {
+          toast.success(res.message || "Stock Out Entry Added Successfully!");
+          const masterId = res.masterId;
+          navigate(`/stock-out/add/${masterId}`);
+          // queryClient.invalidateQueries({ queryKey: ["get-all-birdInventories"] });
+          // formik.resetForm();
+          // setEntries([]);
+        },
+        onError: (error: Error) => {
+          console.log("error", error);
+          toast.error(error.message || "Error occcured.");
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col gap-8 mb-20 px-1 ">
@@ -31,7 +54,7 @@ const StockOut = () => {
           </p>
 
           <Button
-            onClick={() => navigate("/stock-out/add")}
+            onClick={() => handleCreateStockOut()}
             className="bg-emerald-600 text-white hover:bg-emerald-700 w-full">
             Add Stock Out
           </Button>

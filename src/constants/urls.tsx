@@ -21,3 +21,23 @@ export const GET_ALL_FEED_INVNETORY = "api/feedinventory";
 export const UPDATE_FEED_INVENTORY = (id: string | number) => `api/feedinventory/${id}`;
 export const DELETE_FEED_INVENTORY = (id: string | number) =>
   `api/feedinventory/soft-delete/${id}`;
+
+export const CREATE_FINAL_REPORT = "api/finalreport";
+export const GET_ALL_FINAL_REPORT = "api/finalreport";
+export const UPDATE_FINAL_REPORT = (id: string | number) => `api/finalreport/${id}`;
+export const DELETE_FINAL_REPORT = (id: string | number) =>
+  `api/finalreport/soft-delete/${id}`;
+
+export const API_BASE_URL = "api/stockout";
+
+// ---------- MASTER ----------
+export const STOCKOUT_CREATE_MASTER = "api/stockout/master";
+export const STOCKOUT_FINALIZE_MASTER = (id: number) =>
+  `${API_BASE_URL}/master/finalize/${id}`;
+
+// ---------- ENTRIES ----------
+export const STOCKOUT_ADD_ENTRY = `${API_BASE_URL}/entry`;
+export const STOCKOUT_GET_ENTRIES = (masterId: number) =>
+  `${API_BASE_URL}/entry/${masterId}`;
+export const STOCKOUT_DELETE_ENTRY = (entryId: number) =>
+  `${API_BASE_URL}/entry/${entryId}`;

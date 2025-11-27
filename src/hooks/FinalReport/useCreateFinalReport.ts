@@ -1,17 +1,17 @@
-import { CREATE_FEED_INVENTORY } from "@/constants/urls";
+import { CREATE_FINAL_REPORT } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
 import type { FeedInventoryFormData } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 
 interface createFinalReportProps {
-  feedInventory: FeedInventoryFormData;
+  finalReport: FinalReportFormValues;
 }
 
-const createFinalReport = async ({ feedInventory }: createFinalReportProps) => {
+const createFinalReport = async ({ finalReport }: createFinalReportProps) => {
   const response = await makeRequest<FeedInventoryFormData>({
-    pathname: CREATE_FEED_INVENTORY,
+    pathname: CREATE_FINAL_REPORT,
     method: "POST",
-    values: feedInventory,
+    values: finalReport,
   });
   return response;
 };

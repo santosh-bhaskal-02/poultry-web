@@ -1,26 +1,26 @@
-import { CREATE_BIRD_INVENTORY } from "@/constants/urls";
+import { STOCKOUT_CREATE_MASTER } from "@/constants/urls";
 import makeRequest from "@/services/api/makeRequest";
 import type { BirdInventoryFormData } from "@/types";
+import type { StockOutMasterFormData } from "@/types/stockOut";
 import { useMutation } from "@tanstack/react-query";
 
-interface createStockOutEntryProps {
-  stockOutEntry: BirdInventoryFormData;
-}
+// interface createStockOutProps {
+//   stockOut: StockOutMasterFormData;
+// }
 
-const createStockOutEntry = async ({ stockOutEntry }: createStockOutEntryProps) => {
-  const response = await makeRequest<BirdInventoryFormData>({
-    pathname: CREATE_BIRD_INVENTORY,
+const createStockOut = async () => {
+  const response = await makeRequest({
+    pathname: STOCKOUT_CREATE_MASTER,
     method: "POST",
-    values: stockOutEntry,
   });
   return response;
 };
 
-const useCreateStockOutEntry = () => {
+const useCreateStockOut = () => {
   return useMutation({
-    mutationKey: ["create-stock-out-entry"],
-    mutationFn: createStockOutEntry,
+    mutationKey: ["create-stock-out"],
+    mutationFn: createStockOut,
   });
 };
 
-export default useCreateStockOutEntry;
+export default useCreateStockOut;

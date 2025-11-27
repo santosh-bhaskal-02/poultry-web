@@ -25,45 +25,6 @@ import useCreateFinalReport from "@/hooks/FinalReport/useCreateFinalReport";
 
 // ------------------ TYPES ------------------
 
-interface FinalReportFormValues {
-  startDate: Date;
-  endDate: Date;
-  batchNumber: string;
-
-  // Bird quantities
-  totalBirds: number | "";
-  birdRate: number | "";
-  birdCost: number;
-
-  // Feed quantities
-  totalBags: number | "";
-  totalFeedKg: number;
-  feedRate: number | "";
-  feedCost: number;
-
-  // Stock out
-  totalSoldBirds: number | "";
-  totalBirdsWeight: number | "";
-  avgBodyWeight: number;
-
-  // Batch expenses
-  chicksCost: number;
-  medicineCost: number | "";
-  adminCost: number | "";
-  grossProductionCost: number;
-  netCostPerKg: number;
-  stdCostPerKg: number;
-
-  // Rearing charges
-  rearingChargesStd: number;
-  productionCostIncentive: number;
-  rearingChargesPerBird: number;
-  totalRearingCharges: number;
-
-  // Final bill
-  totalAmountPayable: number;
-}
-
 // ------------------ VALIDATION ------------------
 
 const validationSchema = Yup.object({
@@ -208,22 +169,21 @@ const BirdInventory = () => {
 
         console.log("Final report payload:", payload);
 
-        // Uncomment & adjust this when your API is ready:
-        // createFinalReport(
-        //   { finalReport: payload },
-        //   {
-        //     onSuccess: (res) => {
-        //       toast.success(res?.message || "Final report created successfully");
-        //       queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
-        //       resetForm();
-        //       setSubmitting(false);
-        //     },
-        //     onError: (error: any) => {
-        //       toast.error(error?.message || "Failed to create final report");
-        //       setSubmitting(false);
-        //     },
-        //   }
-        // );
+        createFinalReport(
+          { finalReport: payload },
+          {
+            onSuccess: (res) => {
+              toast.success(res?.message || "Final report created successfully");
+              queryClient.invalidateQueries({ queryKey: ["get-dashboard"] });
+              resetForm();
+              setSubmitting(false);
+            },
+            onError: (error: any) => {
+              toast.error(error?.message || "Failed to create final report");
+              setSubmitting(false);
+            },
+          }
+        );
 
         toast.success("Final report calculated successfully (mock).");
         setSubmitting(false);
@@ -446,7 +406,7 @@ const BirdInventory = () => {
               <InputField
                 label="Average Body Weight (Kg)"
                 name="avgBodyWeight"
-                type="number"
+                type="string"
                 value={values.avgBodyWeight}
                 readOnly
                 onChange={() => {}}
@@ -507,7 +467,7 @@ const BirdInventory = () => {
               <InputField
                 label="Gross Production Cost"
                 name="grossProductionCost"
-                type="number"
+                type="string"
                 value={values.grossProductionCost}
                 readOnly
                 onChange={() => {}}
@@ -517,7 +477,7 @@ const BirdInventory = () => {
               <InputField
                 label="Net Cost / Kg"
                 name="netCostPerKg"
-                type="number"
+                type="string"
                 value={values.netCostPerKg}
                 readOnly
                 onChange={() => {}}
@@ -526,7 +486,7 @@ const BirdInventory = () => {
               <InputField
                 label="Std. Cost / Kg"
                 name="stdCostPerKg"
-                type="number"
+                type="string"
                 value={values.stdCostPerKg}
                 readOnly
                 onChange={() => {}}
@@ -544,7 +504,7 @@ const BirdInventory = () => {
               <InputField
                 label="Rearing Charges (Std. 6.50)"
                 name="rearingChargesStd"
-                type="number"
+                type="string"
                 value={values.rearingChargesStd}
                 readOnly
                 onChange={() => {}}
@@ -553,7 +513,7 @@ const BirdInventory = () => {
               <InputField
                 label="Prod. Cost Incentive"
                 name="productionCostIncentive"
-                type="number"
+                type="string"
                 value={values.productionCostIncentive}
                 readOnly
                 onChange={() => {}}
@@ -562,7 +522,7 @@ const BirdInventory = () => {
               <InputField
                 label="Rearing Charges Per Bird"
                 name="rearingChargesPerBird"
-                type="number"
+                type="string"
                 value={values.rearingChargesPerBird}
                 readOnly
                 onChange={() => {}}
@@ -571,7 +531,7 @@ const BirdInventory = () => {
               <InputField
                 label="Total Rearing Charges"
                 name="totalRearingCharges"
-                type="number"
+                type="string"
                 value={values.totalRearingCharges}
                 readOnly
                 onChange={() => {}}
@@ -588,7 +548,7 @@ const BirdInventory = () => {
             <InputField
               label="Total Amount Payable"
               name="totalAmountPayable"
-              type="number"
+              type="string"
               value={values.totalAmountPayable}
               readOnly
               onChange={() => {}}
