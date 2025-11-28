@@ -15,6 +15,7 @@ const useGetDashboard = () => {
   return useQuery({
     queryKey: ["get-dashboard"],
     queryFn: () => getDashboardSummary(),
+    retry: 1,
   });
 };
 

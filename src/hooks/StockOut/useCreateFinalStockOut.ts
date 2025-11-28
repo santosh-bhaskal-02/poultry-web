@@ -11,7 +11,7 @@ interface createFinalStockOutProps {
 const createFinalStockOut = async ({ id, finalStockOut }: createFinalStockOutProps) => {
   const response = await makeRequest({
     pathname: STOCKOUT_FINALIZE_MASTER(id),
-    method: "POST",
+    method: "PUT",
     values: finalStockOut,
   });
   return response;

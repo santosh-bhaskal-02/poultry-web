@@ -31,6 +31,9 @@ export const DELETE_FINAL_REPORT = (id: string | number) =>
 export const API_BASE_URL = "api/stockout";
 
 // ---------- MASTER ----------
+export const GET_ALL_STOCKOUT_MASTERS = "api/stockout/master";
+export const GET_STOCKOUT_MASTER_BY_ID = (masterId: number) =>
+  `api/stockout/master/${masterId}`;
 export const STOCKOUT_CREATE_MASTER = "api/stockout/master";
 export const STOCKOUT_FINALIZE_MASTER = (id: number) =>
   `${API_BASE_URL}/master/finalize/${id}`;
@@ -40,4 +43,7 @@ export const STOCKOUT_ADD_ENTRY = `${API_BASE_URL}/entry`;
 export const STOCKOUT_GET_ENTRIES = (masterId: number) =>
   `${API_BASE_URL}/entry/${masterId}`;
 export const STOCKOUT_DELETE_ENTRY = (entryId: number) =>
+  `${API_BASE_URL}/entry/${entryId}`;
+
+export const STOCKOUT_UPDATE_ENTRY = (entryId: number) =>
   `${API_BASE_URL}/entry/${entryId}`;

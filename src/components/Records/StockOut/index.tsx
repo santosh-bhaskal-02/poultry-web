@@ -1,19 +1,17 @@
-import { useState } from "react";
 import dayjs from "dayjs";
-import EditDailyRecordModal from "../../Common/Modal/EditDailyRecord";
 import { DataTable } from "@/components/Common/Table";
-import useGetAllDailyRecord from "@/hooks/DailyRecord/useGetAllDailyRecords";
-import type { DailyRecordResponse } from "@/types";
+import useGetAllStockOutMasters from "@/hooks/StockOut/GetAllStockOutMasters";
+import { useNavigate } from "react-router-dom";
 
 const StockOutReport = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [editRecord, setEditRecord] = useState<DailyRecordResponse>();
+  const navigate = useNavigate();
 
-  const { data: records } = useGetAllDailyRecord();
+  const { data: records } = useGetAllStockOutMasters();
 
-  const handleEdit = (record: DailyRecordResponse) => {
-    setEditRecord(record);
-    setModalOpen(!isModalOpen);
+  const handleEdit = (record) => {
+    // setEditRecord(record);
+    // setModalOpen(!isModalOpen);
+    navigate(`/stock-out/add/${record.id}`);
   };
 
   const columns = [
@@ -22,21 +20,15 @@ const StockOutReport = () => {
       label: "Date",
       render: (value: string) => dayjs(value).format("DD/MM/YYYY"),
     },
-    { key: "birdAgeInDays", label: "Age" },
-    { key: "feedConsumedBags", label: "Feed(Bag)" },
-    { key: "mortalityCount", label: "Mortality" },
+    { key: "stockOutNo", label: "No." },
+    { key: "totalBirds", label: "Total Birds" },
+    { key: "totalWeight", label: "Total Weight" },
+    { key: "avgWeight", label: "Average Weight" },
   ];
 
   return (
     <div className="py-2 mb-10">
       <DataTable data={records?.data} columns={columns} onRowClick={handleEdit} />
-      {editRecord && (
-        <EditDailyRecordModal
-          editData={editRecord}
-          isOpen={isModalOpen}
-          onClose={() => setModalOpen(!isModalOpen)}
-        />
-      )}
     </div>
   );
 };

@@ -47,6 +47,7 @@ export interface StockOutMasterResponse {
 }
 
 type StockOutEntry = {
+  id?: number;
   srNo?: number;
   StockOutMasterId: string | number;
   birds: number;
