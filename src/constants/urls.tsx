@@ -24,6 +24,7 @@ export const DELETE_FEED_INVENTORY = (id: string | number) =>
 
 export const CREATE_FINAL_REPORT = "api/finalreport";
 export const GET_ALL_FINAL_REPORT = "api/finalreport";
+export const GET_FINAL_REPORT_BY_ID = (id: string | number) => `api/finalreport/${id}`;
 export const UPDATE_FINAL_REPORT = (id: string | number) => `api/finalreport/${id}`;
 export const DELETE_FINAL_REPORT = (id: string | number) =>
   `api/finalreport/soft-delete/${id}`;

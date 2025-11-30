@@ -225,18 +225,18 @@ const EditDailyRecordModal = ({
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-5 border-t px-6 py-4 bg-gray-50 rounded-b-2xl">
+        <div className="flex flex-row sm:flex-row justify-end gap-3 sm:gap-5 border-t px-6 py-4 bg-gray-50 rounded-b-2xl">
           <Button
             onClick={onClose}
             type="button"
             variant="secondary"
-            className="w-full sm:w-40 bg-gray-400 text-white font-medium hover:bg-gray-500 transition-all">
+            className=" bg-gray-400 text-white font-medium hover:bg-gray-500 transition-all">
             Cancel
           </Button>
           <Button
             type="submit"
             disabled={isEditing}
-            className="w-full sm:w-40 bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all">
+            className=" bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all">
             {isEditing ? "Saving..." : "Submit"}
           </Button>
         </div>

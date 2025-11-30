@@ -36,7 +36,7 @@ const Dashboard = () => {
           </h1>
 
           <p className="text-slate-700 text-sm mt-1">
-            Here’s your farm overview for today
+            Here's your farm overview for today
           </p>
         </div>
 

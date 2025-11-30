@@ -18,6 +18,7 @@ import Inventory from "@/components/Inventories";
 import StockOut from "@/components/StockOut";
 import StockOutForm from "@/components/StockOut/StockOutForm";
 import FinalReportPage from "@/Pages/FinalReport";
+import FinalReportForm from "@/components/Report/FinalReportForm";
 const Layout = () => (
   <>
     {/* <Navbar /> */}
@@ -45,7 +46,8 @@ const AppRoutes = () => {
           <Route path="/stock-out" element={<StockOut />} />
           <Route path="/stock-out/add/:id" element={<StockOutForm />} />
           <Route path="/report" element={<FinalReportPage />} />
-
+          <Route path="/report/create" element={<FinalReportForm />} />
+          <Route path="/report/:id" element={<FinalReportForm />} />
           {/* Reports Section */}
           <Route path="/reports">
             <Route path="daily-report" element={<DailyReportPage />} />
