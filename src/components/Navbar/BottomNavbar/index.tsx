@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Bird, Wheat, BarChart3, Plus } from "lucide-react";
+import { Home, Bird, BarChart3, Plus } from "lucide-react";
 import AddDailyRecordModal from "@/components/Common/Modal/AddDailyRecordModal";
 import { useState } from "react";
 
@@ -7,7 +7,7 @@ const BottomNavBar = () => {
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
     { to: "/", label: "Home", icon: <Home className="w-6 h-6" /> },
@@ -25,7 +25,7 @@ const BottomNavBar = () => {
       {/* Add Modal */}
       <AddDailyRecordModal open={openModal} onClose={() => setOpenModal(false)} />
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-gray-200 sm:hidden">
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-gray-200 ">
         {/* Curve Background */}
         <div className="relative w-full h-16 flex items-center justify-between px-6">
           {/* Home */}

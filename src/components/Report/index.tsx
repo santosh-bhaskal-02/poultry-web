@@ -1,5 +1,4 @@
-import { Bird, FilePlus, ClipboardCheck } from "lucide-react"; // Updated icons
-import React from "react";
+import { Bird, FilePlus, ClipboardCheck } from "lucide-react";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import PreviousFinalReport from "../Records/PreviousFinalReport";
@@ -31,8 +30,7 @@ export default function FinalRreport() {
             </div>
 
             <p className="text-base text-gray-600 leading-relaxed mb-6">
-              **Finalize stock data** including boxes, birds per box, mortality rates, and
-              total housed birds for the cycle.
+              Finalize Stock.
             </p>
 
             <Button

@@ -78,8 +78,7 @@ const recalcDerivedValues = (
   const avgBodyWeight = totalSoldBirds > 0 ? totalBirdsWeight / totalSoldBirds : 0; // Total Birds Weight / Total Sold Birds
   setFieldValue("avgBodyWeight", Number(avgBodyWeight.toFixed(2)));
 
-  // 4) Batch expenses
-  const chicksCost = birdCost; // Chicks Cost = Bird Cost
+  const chicksCost = birdCost;
   setFieldValue("chicksCost", chicksCost);
 
   const medicineCost =
@@ -106,6 +105,7 @@ const recalcDerivedValues = (
   setFieldValue("totalRearingCharges", Number(totalRearingCharges.toFixed(2)));
 
   setFieldValue("totalAmountPayable", Number(totalRearingCharges.toFixed(2)));
+  setFieldValue("netCostPerKg", Number(netCostPerKg.toFixed(2)));
 };
 
 const FinalReportForm = () => {
@@ -200,7 +200,6 @@ const FinalReportForm = () => {
           }
         );
 
-        toast.success("Final report calculated successfully (mock).");
         setSubmitting(false);
       }}>
       {({ values, setFieldValue, isSubmitting }) =>
